@@ -75,8 +75,7 @@
 	BOOL shouldBounce;
 }
 
-@property (nonatomic, retain) UIView * contentView;
-@property (nonatomic, retain) UIView * backView;
+@property (nonatomic, readonly) UIView * backView;
 @property (nonatomic, assign) BOOL contentViewMoving;
 @property (nonatomic, getter=isSelected) BOOL selected;
 @property (nonatomic, assign) BOOL shouldSupportSwiping;

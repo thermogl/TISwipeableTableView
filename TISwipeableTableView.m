@@ -207,7 +207,6 @@
 @end
 
 @implementation TISwipeableTableViewCell
-@synthesize contentView;
 @synthesize backView;
 @synthesize contentViewMoving;
 @synthesize selected;
@@ -220,26 +219,22 @@
 		
 		[self setBackgroundColor:[UIColor clearColor]];
 		
-		TISwipeableTableViewCellView * aView = [[TISwipeableTableViewCellView alloc] initWithFrame:CGRectZero];
-		[aView setClipsToBounds:YES];
-		[aView setOpaque:YES];
-		[aView setBackgroundColor:[UIColor clearColor]];
-		[self setContentView:aView];
-		[aView release];
+		contentView = [[TISwipeableTableViewCellView alloc] initWithFrame:CGRectZero];
+		[contentView setClipsToBounds:YES];
+		[contentView setOpaque:YES];
+		[contentView setBackgroundColor:[UIColor clearColor]];
 		
-		TISwipeableTableViewCellBackView * anotherView = [[TISwipeableTableViewCellBackView alloc] initWithFrame:CGRectZero];
-		[anotherView setOpaque:YES];
-		[anotherView setClipsToBounds:YES];
-		[anotherView setHidden:YES];
-		[anotherView setBackgroundColor:[UIColor clearColor]];
-		[self setBackView:anotherView];
-		[anotherView release];
-		
-		// Backview must be added first!
-		// DO NOT USE sendSubviewToBack:
-		
+		backView = [[TISwipeableTableViewCellBackView alloc] initWithFrame:CGRectZero];
+		[backView setOpaque:YES];
+		[backView setClipsToBounds:YES];
+		[backView setHidden:YES];
+		[backView setBackgroundColor:[UIColor clearColor]];
+
 		[self addSubview:backView];
 		[self addSubview:contentView];
+		
+		[contentView release];
+		[backView release];
 		
 		[self setContentViewMoving:NO];
 		[self setSelected:NO];
@@ -464,12 +459,6 @@
 	NSString * extraInfo = backView.hidden ? @"ContentView visible": @"BackView visible";
 	
 	return [NSString stringWithFormat:@"<TISwipeableTableViewCell %p '%@'>", self, extraInfo];
-}
-
-- (void)dealloc {
-	[contentView release];
-	[backView release];
-    [super dealloc];
 }
 
 @end
