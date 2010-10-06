@@ -279,7 +279,7 @@
 
 - (void)setAccessoryView:(UIView *)accessoryView {
 	
-	// Same thing here
+	// Same as above.
 	[self setShouldSupportSwiping:NO];
 	[super setAccessoryView:accessoryView];
 }
