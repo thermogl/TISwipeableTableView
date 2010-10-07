@@ -60,6 +60,7 @@
 
 @interface TISwipeableTableViewCellView : UIView
 @end
+
 @interface TISwipeableTableViewCellBackView : UIView
 @end
 
