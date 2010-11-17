@@ -22,18 +22,12 @@
 
 - (void)drawContentView:(CGRect)rect {
 	
-	CGContextRef context = UIGraphicsGetCurrentContext();
-	
-	UIColor * backgroundColour = [UIColor whiteColor];
 	UIColor * textColour = [UIColor blackColor];
 	
-	if (self.isSelected) {
-		backgroundColour = [UIColor colorWithRed:0.189 green:0.495 blue:0.903 alpha:1];
+	if (self.selected) {
 		textColour = [UIColor whiteColor];
+		[[UIImage imageNamed:@"selectiongradient.png"] drawInRect:rect];
 	}
-	
-	[backgroundColour set];
-	CGContextFillRect(context, rect);
 	
 	[textColour set];
 	
@@ -44,10 +38,6 @@
 								(rect.size.height / 2) - (textSize.height / 2),
 								textSize.width, textSize.height)
 			withFont:textFont];
-	
-	if (self.isSelected){
-		[self drawShadowsWithHeight:7 opacity:0.1 InRect:rect forContext:context];
-	}
 }
 
 - (void)drawBackView:(CGRect)rect {

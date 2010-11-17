@@ -271,17 +271,12 @@
 }
 
 - (void)setAccessoryType:(UITableViewCellAccessoryType)accessoryType {
-	
-	// Having an accessory buggers swiping right up, so we disable it.
-	[self setShouldSupportSwiping:NO];
-	[super setAccessoryType:accessoryType];
+	// Having an accessory buggers swiping right up, so we override.
+	// It's easier just to draw the accessory yourself.
 }
 
 - (void)setAccessoryView:(UIView *)accessoryView {
-	
 	// Same as above.
-	[self setShouldSupportSwiping:NO];
-	[super setAccessoryView:accessoryView];
 }
 
 - (void)setSelected:(BOOL)flag {

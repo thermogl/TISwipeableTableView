@@ -66,6 +66,7 @@
     }
     
 	[cell setText:[NSString stringWithFormat:@"Swipe me! (Row %i)", indexPath.row]];
+	[cell setAccessoryType:UITableViewCellAccessoryCheckmark];
 
     return cell;
 }
