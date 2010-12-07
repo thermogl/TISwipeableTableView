@@ -36,7 +36,6 @@
 - (void)highlightTouchedRow {
 		
 	UITableViewCell * testCell = [self cellForRowAtIndexPath:[self indexPathForRowAtPoint:gestureStartPoint]];
-	
 	if ([testCell isKindOfClass:[TISwipeableTableViewCell class]]){
 		[(TISwipeableTableViewCell *)testCell setSelected:YES];
 	}
@@ -158,7 +157,6 @@
 }
 
 - (NSString *)description {
-	
 	return [NSString stringWithFormat:@"<TISwipeableTableView %p 'Handling swiping like a boss since 1861'>", self];
 }
 				 
@@ -365,6 +363,9 @@
 }
 
 - (void)resetViews {
+	
+	[contentView.layer removeAllAnimations];
+	[backView.layer removeAllAnimations];
 	
 	[self setContentViewMoving:NO];
 	

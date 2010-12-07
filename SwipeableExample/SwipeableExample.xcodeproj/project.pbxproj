@@ -13,13 +13,13 @@
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		2892E4100DC94CBA00A64D0F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */; };
 		28C286E10D94DF7D0034E888 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28C286E00D94DF7D0034E888 /* RootViewController.m */; };
+		E204DB5F12ADC1820063A748 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E204DB5E12ADC1820063A748 /* AudioToolbox.framework */; };
 		E238A58B125BED4500055319 /* TISwipeableTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = E238A58A125BED4500055319 /* TISwipeableTableView.m */; };
 		E24E6A4711E532710082E0CD /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E24E6A4611E532710082E0CD /* QuartzCore.framework */; };
 		E29038CF129458D800E90AEC /* selectiongradient.png in Resources */ = {isa = PBXBuildFile; fileRef = E29038CE129458D800E90AEC /* selectiongradient.png */; };
 		E2C99CDC11C8CC3B00FA14C3 /* ExampleCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E2C99CDB11C8CC3B00FA14C3 /* ExampleCell.m */; };
 		E2C99D0811C8CF8F00FA14C3 /* meshpattern.png in Resources */ = {isa = PBXBuildFile; fileRef = E2C99D0711C8CF8F00FA14C3 /* meshpattern.png */; };
 		E2C99D6911C8D25300FA14C3 /* tick.wav in Resources */ = {isa = PBXBuildFile; fileRef = E2C99D6811C8D25300FA14C3 /* tick.wav */; };
-		E2C99D6B11C8D25F00FA14C3 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2C99D6A11C8D25F00FA14C3 /* AVFoundation.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +34,7 @@
 		28C286E00D94DF7D0034E888 /* RootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootViewController.m; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* SwipeableExample-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "SwipeableExample-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
+		E204DB5E12ADC1820063A748 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		E238A589125BED4500055319 /* TISwipeableTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TISwipeableTableView.h; path = ../TISwipeableTableView.h; sourceTree = SOURCE_ROOT; };
 		E238A58A125BED4500055319 /* TISwipeableTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TISwipeableTableView.m; path = ../TISwipeableTableView.m; sourceTree = SOURCE_ROOT; };
 		E24E6A4611E532710082E0CD /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -42,7 +43,6 @@
 		E2C99CDB11C8CC3B00FA14C3 /* ExampleCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExampleCell.m; sourceTree = "<group>"; };
 		E2C99D0711C8CF8F00FA14C3 /* meshpattern.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = meshpattern.png; sourceTree = "<group>"; };
 		E2C99D6811C8D25300FA14C3 /* tick.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = tick.wav; sourceTree = "<group>"; };
-		E2C99D6A11C8D25F00FA14C3 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,8 +53,8 @@
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
 				2892E4100DC94CBA00A64D0F /* CoreGraphics.framework in Frameworks */,
-				E2C99D6B11C8D25F00FA14C3 /* AVFoundation.framework in Frameworks */,
 				E24E6A4711E532710082E0CD /* QuartzCore.framework in Frameworks */,
+				E204DB5F12ADC1820063A748 /* AudioToolbox.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -86,7 +86,6 @@
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
-				E2C99D6A11C8D25F00FA14C3 /* AVFoundation.framework */,
 			);
 			name = CustomTemplate;
 			sourceTree = "<group>";
@@ -114,6 +113,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E204DB5E12ADC1820063A748 /* AudioToolbox.framework */,
 				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
 				1D30AB110D05D00D00671497 /* Foundation.framework */,
 				2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */,
@@ -255,7 +255,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 3.1;
 				PREBINDING = NO;
-				SDKROOT = iphoneos4.1;
+				SDKROOT = iphoneos;
 			};
 			name = Debug;
 		};
@@ -269,7 +269,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PREBINDING = NO;
-				SDKROOT = iphoneos4.1;
+				SDKROOT = iphoneos;
 			};
 			name = Release;
 		};

@@ -38,7 +38,6 @@
 - (void)tableView:(UITableView *)tableView didSwipeCellAtIndexPath:(NSIndexPath *)indexPath;
 @end
 
-
 @interface TISwipeableTableView : UITableView {
 
 	id <TISwipeableTableViewDelegate> swipeDelegate;

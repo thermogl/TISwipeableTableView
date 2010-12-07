@@ -8,13 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import "ExampleCell.h"
-#import <AVFoundation/AVFoundation.h>
 
-@interface RootViewController : UITableViewController <TISwipeableTableViewDelegate, AVAudioPlayerDelegate> {
-	
-	NSMutableArray * audioPlayers;
-}
-
-@property (nonatomic, retain) NSMutableArray * audioPlayers;
-
+@interface RootViewController : UITableViewController <TISwipeableTableViewDelegate>
 @end

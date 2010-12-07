@@ -7,9 +7,9 @@
 //
 
 #import "RootViewController.h"
+#import <AudioToolbox/AudioToolbox.h>
 
 @implementation RootViewController
-@synthesize audioPlayers;
 
 #pragma mark -
 #pragma mark View lifecycle
@@ -26,7 +26,6 @@
 		[self setTableView:aTableView];
 		[aTableView release];
 		
-		[self setAudioPlayers:[NSMutableArray array]];
 		[self.navigationItem setTitle:@"Swipeable TableView"];
 	}
 	
@@ -85,34 +84,26 @@
 	[alertView release];
 }
 
+
+static void completionCallback(SystemSoundID soundID, void * clientData) {
+	AudioServicesRemoveSystemSoundCompletion(soundID);
+}
+
 - (void)tableView:(UITableView *)tableView didSwipeCellAtIndexPath:(NSIndexPath *)indexPath {
 	
 	NSString * path = [[NSBundle mainBundle] pathForResource:@"tick" ofType:@"wav"];
-	AVAudioPlayer * audioPlayer = [[AVAudioPlayer alloc] initWithData:[NSData dataWithContentsOfFile:path] error:nil];
-	[audioPlayer play];
-	[audioPlayer setDelegate:self];
-	[audioPlayers addObject:audioPlayer];
-	[audioPlayer release];
+	NSURL * fileURL = [NSURL fileURLWithPath:path isDirectory:NO];
+	
+	SystemSoundID soundID;
+	AudioServicesCreateSystemSoundID((CFURLRef)fileURL, &soundID);
+	AudioServicesPlaySystemSound(soundID);
+	AudioServicesAddSystemSoundCompletion (soundID, NULL, NULL, completionCallback, NULL);
 }
 
 - (void)scrollViewDidScroll:(UIScrollView*)scrollView {
 	
-	[(TISwipeableTableView*)self.tableView hideVisibleBackView:YES];
+	[(TISwipeableTableView*)self.tableView hideVisibleBackView:NO];
 }
-
-- (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag {
-	
-	[audioPlayers removeObject:player];
-}
-
-#pragma mark -
-#pragma mark Memory management
-
-- (void)dealloc {
-	[audioPlayers release];
-    [super dealloc];
-}
-
 
 @end
 
