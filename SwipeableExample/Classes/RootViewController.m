@@ -14,29 +14,19 @@
 #pragma mark -
 #pragma mark View lifecycle
 
-- (id)initWithStyle:(UITableViewStyle)style {
-	
-	if ((self = [super initWithStyle:style])){
-		
-		TISwipeableTableView * aTableView = [[TISwipeableTableView alloc] initWithFrame:self.tableView.frame style:style];
-		[aTableView setDelegate:self];
-		[aTableView setDataSource:self];
-		[aTableView setSwipeDelegate:self];
-		[aTableView setRowHeight:54];
-		[self setTableView:aTableView];
-		[aTableView release];
-		
-		[self.navigationItem setTitle:@"Swipeable TableView"];
-	}
-	
-	return self;
-}
-
 - (void)viewDidLoad {
+	
+	TISwipeableTableView * aTableView = [[TISwipeableTableView alloc] initWithFrame:self.tableView.frame style:style];
+	[aTableView setDelegate:self];
+	[aTableView setDataSource:self];
+	[aTableView setSwipeDelegate:self];
+	[aTableView setRowHeight:54];
+	[self setTableView:aTableView];
+	[aTableView release];
+	
+	[self.navigationItem setTitle:@"Swipeable TableView"];
+	
     [super viewDidLoad];
-
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
 #pragma mark -
@@ -66,7 +56,7 @@
     
 	[cell setText:[NSString stringWithFormat:@"Swipe me! (Row %i)", indexPath.row]];
 	[cell setAccessoryType:UITableViewCellAccessoryCheckmark];
-
+	
     return cell;
 }
 
@@ -101,7 +91,6 @@ static void completionCallback(SystemSoundID soundID, void * clientData) {
 }
 
 - (void)scrollViewDidScroll:(UIScrollView*)scrollView {
-	
 	[(TISwipeableTableView*)self.tableView hideVisibleBackView:NO];
 }
 
