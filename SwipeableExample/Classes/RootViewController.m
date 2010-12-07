@@ -16,7 +16,7 @@
 
 - (void)viewDidLoad {
 	
-	TISwipeableTableView * aTableView = [[TISwipeableTableView alloc] initWithFrame:self.tableView.frame style:UITableViewStylePlain];
+	TISwipeableTableView * aTableView = [[TISwipeableTableView alloc] initWithFrame:self.tableView.frame style:self.tableView.style];
 	[aTableView setDelegate:self];
 	[aTableView setDataSource:self];
 	[aTableView setSwipeDelegate:self];
