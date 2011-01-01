@@ -398,7 +398,7 @@
 	}
 }
 
-- (CAAnimationGroup *)bounceAnimationWithHideDuration:(CGFloat)hideDuration initialXOrigin:(CGFloat)originalX; {
+- (CAAnimationGroup *)bounceAnimationWithHideDuration:(CGFloat)hideDuration initialXOrigin:(CGFloat)originalX {
 	
 	CABasicAnimation * animation0 = [CABasicAnimation animationWithKeyPath:@"position.x"];
 	[animation0 setFromValue:[NSNumber numberWithFloat:originalX]];

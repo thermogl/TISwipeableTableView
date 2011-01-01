@@ -20,6 +20,14 @@
 	}
 }
 
+- (void)backViewWillAppear {
+	// Add UI elements to the backView here.
+}
+
+- (void)backViewDidDisappear {
+	// Remove any subviews from the backView.
+}
+
 - (void)drawContentView:(CGRect)rect {
 	
 	UIColor * textColour = [UIColor blackColor];
