@@ -43,12 +43,21 @@
 
 - (BOOL)supportsSwipingForCellAtPoint:(CGPoint)point {
 	
-	UITableViewCell * testCell = [self cellForRowAtIndexPath:[self indexPathForRowAtPoint:point]];
+	NSIndexPath * indexPath = [self indexPathForRowAtPoint:point];
+	UITableViewCell * testCell = [self cellForRowAtIndexPath:indexPath];
+	
+	BOOL supportsSwiping = NO;
+	
 	if ([testCell isKindOfClass:[TISwipeableTableViewCell class]]){
-		return [(TISwipeableTableViewCell *)testCell shouldSupportSwiping];
+		supportsSwiping = ((TISwipeableTableViewCell *)testCell).shouldSupportSwiping;
 	}
 	
-	return NO;
+	// Thanks to Martin Destagnol (@mdestagnol) for this delegate method.
+	if (supportsSwiping && [swipeDelegate respondsToSelector:@selector(tableView:shouldSwipeCellAtIndexPath:)]){
+		supportsSwiping = [swipeDelegate tableView:self shouldSwipeCellAtIndexPath:indexPath];
+	}
+	
+	return supportsSwiping;
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -89,7 +98,7 @@
 				
 				[cell revealBackView];
 				
-				if (swipeDelegate && [swipeDelegate respondsToSelector:@selector(tableView:didSwipeCellAtIndexPath:)]){
+				if ([swipeDelegate respondsToSelector:@selector(tableView:didSwipeCellAtIndexPath:)]){
 					[swipeDelegate tableView:self didSwipeCellAtIndexPath:[self indexPathForRowAtPoint:gestureStartPoint]];
 				}
 				
