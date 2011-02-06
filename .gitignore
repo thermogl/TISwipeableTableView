@@ -9,3 +9,6 @@
 *.perspectivev3
 *.pbxuser
 */build/*
+
+*.xcworkspace
+xcuserdata

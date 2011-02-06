@@ -21,6 +21,8 @@
 @synthesize swipeDelegate;
 @synthesize indexOfVisibleBackView;
 
+// If you're not supporting 3.1.x, then gesture recognisers
+// should be used instead.
 #define kMinimumGestureLength 18
 #define kMaximumVariance 8
 
