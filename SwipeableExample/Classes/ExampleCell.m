@@ -20,12 +20,25 @@
 	}
 }
 
+- (void)buttonWasTapped:(UIButton *)button {
+	NSLog(@"wahey");
+}
+
 - (void)backViewWillAppear {
-	// Add UI elements to the backView here.
+	
+	UIButton * button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+	[button addTarget:self action:@selector(buttonWasTapped:) forControlEvents:UIControlEventTouchUpInside];
+	[button setTitle:@"Tap me" forState:UIControlStateNormal];
+	[button setFrame:CGRectMake(20, 4, self.backView.frame.size.width - 40, self.backView.frame.size.height - 8)];
+	[self.backView addSubview:button];
 }
 
 - (void)backViewDidDisappear {
 	// Remove any subviews from the backView.
+	
+	for (UIView * subview in self.backView.subviews){
+		[subview removeFromSuperview];
+	}
 }
 
 - (void)drawContentView:(CGRect)rect {

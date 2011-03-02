@@ -267,7 +267,6 @@
 	
 	CGRect bound = [self bounds];
 	bound.size.height -= 1;
-	bound.size.width += 20;
 	[backView setFrame:bound];	
 	[contentView setFrame:bound];
 }
