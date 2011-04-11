@@ -346,7 +346,7 @@
 
 - (void)hideBackView {
 	
-	if (!contentViewMoving && !backView.hidden){
+	if (!backView.hidden){
 		
 		[self setContentViewMoving:YES];
 		
