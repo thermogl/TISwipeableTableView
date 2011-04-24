@@ -8,23 +8,27 @@
 
 #import "TISwipeableTableView.h"
 
+#pragma mark -
+#pragma mark TISwipeableTableView
+#pragma mark -
 //==========================================================
 // - TISwipeableTableView
 //==========================================================
 
 @interface TISwipeableTableView (Private)
 - (BOOL)supportsSwipingForCellAtPoint:(CGPoint)point;
+- (void)highlightTouchedRow;
 @end
-
 
 @implementation TISwipeableTableView
 @synthesize swipeDelegate;
 @synthesize indexOfVisibleBackView;
 
-// If you're not supporting 3.1.x, then gesture recognisers
-// should be used instead.
-#define kMinimumGestureLength 18
-#define kMaximumVariance 8
+NSInteger const kMinimumGestureLength = 18;
+NSInteger const kMaximumVariance = 8;
+
+#pragma mark -
+#pragma mark Init
 
 - (id)initWithFrame:(CGRect)frame style:(UITableViewStyle)style {
 	
@@ -35,14 +39,8 @@
 	return self;
 }
 
-- (void)highlightTouchedRow {
-		
-	UITableViewCell * testCell = [self cellForRowAtIndexPath:[self indexPathForRowAtPoint:gestureStartPoint]];
-	if ([testCell isKindOfClass:[TISwipeableTableViewCell class]]){
-		[(TISwipeableTableViewCell *)testCell setSelected:YES];
-	}
-}
-
+#pragma mark -
+#pragma mark Helpers
 - (BOOL)supportsSwipingForCellAtPoint:(CGPoint)point {
 	
 	NSIndexPath * indexPath = [self indexPathForRowAtPoint:point];
@@ -62,6 +60,16 @@
 	return supportsSwiping;
 }
 
+- (void)highlightTouchedRow {
+		
+	UITableViewCell * testCell = [self cellForRowAtIndexPath:[self indexPathForRowAtPoint:gestureStartPoint]];
+	if ([testCell isKindOfClass:[TISwipeableTableViewCell class]]){
+		[(TISwipeableTableViewCell *)testCell setSelected:YES];
+	}
+}
+
+#pragma mark -
+#pragma mark Touches
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
 	
 	[self hideVisibleBackView:YES];
@@ -151,6 +159,8 @@
 	}
 }
 
+#pragma mark -
+#pragma mark Other Stuff
 - (void)hideVisibleBackView:(BOOL)animated {
 	
 	if (indexOfVisibleBackView){
@@ -180,6 +190,9 @@
 
 @end
 
+#pragma mark -
+#pragma mark TISwipeableTableViewCell
+#pragma mark -
 //==========================================================
 // - TISwipeableTableViewCell
 //==========================================================
@@ -222,6 +235,8 @@
 @synthesize shouldSupportSwiping;
 @synthesize shouldBounce;
 
+#pragma mark -
+#pragma mark Init / Overrides
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
 	
     if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])){
@@ -245,10 +260,11 @@
 		[contentView release];
 		[backView release];
 		
-		[self setContentViewMoving:NO];
+		contentViewMoving = YES;
+		shouldSupportSwiping = YES;
+		shouldBounce = YES;
+		
 		[self setSelected:NO];
-		[self setShouldSupportSwiping:YES];
-		[self setShouldBounce:YES];
 		[self hideBackView];
     }
 	
@@ -293,6 +309,8 @@
 	[self setNeedsDisplay];
 }
 
+#pragma mark -
+#pragma mark Subclass Methods
 // Implement the following in a subclass
 - (void)drawContentView:(CGRect)rect {
 	
@@ -321,11 +339,13 @@
 
 //===============================//
 
+#pragma mark -
+#pragma mark Back View Show / Hide
 - (void)revealBackView {
 	
 	if (!contentViewMoving && backView.hidden){
 		
-		[self setContentViewMoving:YES];
+		contentViewMoving = YES;
 		
 		[backView.layer setHidden:NO];
 		[backView setNeedsDisplay];
@@ -348,7 +368,7 @@
 	
 	if (!backView.hidden){
 		
-		[self setContentViewMoving:YES];
+		contentViewMoving = YES;
 		
 		CGFloat hideDuration = 0.09;
 		
@@ -377,7 +397,7 @@
 	[contentView.layer removeAllAnimations];
 	[backView.layer removeAllAnimations];
 	
-	[self setContentViewMoving:NO];
+	contentViewMoving = NO;
 	
 	[contentView.layer setAnchorPoint:CGPointMake(0, 0.5)];
 	[contentView.layer setPosition:CGPointMake(0, contentView.layer.position.y)];
@@ -395,7 +415,8 @@
 		
 		[self backViewDidAppear];
 		[self setSelected:NO];
-		[self setContentViewMoving:NO];
+		
+		contentViewMoving = NO;
 	}
 	
 	if (anim == [contentView.layer animationForKey:@"bounce"]){
@@ -460,10 +481,11 @@
 	return hideAnimations;
 }
 
+#pragma mark -
+#pragma mark Other
 - (NSString *)description {
 	
 	NSString * extraInfo = backView.hidden ? @"ContentView visible": @"BackView visible";
-	
 	return [NSString stringWithFormat:@"<TISwipeableTableViewCell %p '%@'>", self, extraInfo];
 }
 
