@@ -9,6 +9,7 @@
 #import "ExampleCell.h"
 
 @implementation ExampleCell
+@synthesize delegate;
 @synthesize text;
 
 - (void)setText:(NSString *)aString {
@@ -21,7 +22,10 @@
 }
 
 - (void)buttonWasTapped:(UIButton *)button {
-	NSLog(@"wahey");
+	
+	if ([delegate respondsToSelector:@selector(cellBackButtonWasTapped:)]){
+		[delegate cellBackButtonWasTapped:self];
+	}
 }
 
 - (void)backViewWillAppear {

@@ -57,6 +57,8 @@
 	[cell setText:[NSString stringWithFormat:@"Swipe me! (Row %i)", indexPath.row]];
 	[cell setAccessoryType:UITableViewCellAccessoryCheckmark];
 	
+	[cell setDelegate:self];
+	
     return cell;
 }
 
@@ -88,6 +90,10 @@ static void completionCallback(SystemSoundID soundID, void * clientData) {
 	AudioServicesCreateSystemSoundID((CFURLRef)fileURL, &soundID);
 	AudioServicesPlaySystemSound(soundID);
 	AudioServicesAddSystemSoundCompletion (soundID, NULL, NULL, completionCallback, NULL);
+}
+
+- (void)cellBackButtonWasTapped:(ExampleCell *)cell {
+	NSLog(@"%@", cell);
 }
 
 - (void)scrollViewDidScroll:(UIScrollView*)scrollView {
