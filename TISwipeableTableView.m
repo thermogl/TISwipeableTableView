@@ -260,7 +260,7 @@ NSInteger const kMaximumVariance = 8;
 		[contentView release];
 		[backView release];
 		
-		contentViewMoving = YES;
+		contentViewMoving = NO;
 		shouldSupportSwiping = YES;
 		shouldBounce = YES;
 		
