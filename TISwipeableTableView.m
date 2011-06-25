@@ -61,7 +61,7 @@ NSInteger const kMaximumVariance = 8;
 }
 
 - (void)highlightTouchedRow {
-		
+	
 	UITableViewCell * testCell = [self cellForRowAtIndexPath:[self indexPathForRowAtPoint:gestureStartPoint]];
 	if ([testCell isKindOfClass:[TISwipeableTableViewCell class]]){
 		[(TISwipeableTableViewCell *)testCell setSelected:YES];
@@ -97,11 +97,11 @@ NSInteger const kMaximumVariance = 8;
 		
 		CGFloat deltaX = fabsf(gestureStartPoint.x - currentPosition.x);
 		CGFloat deltaY = fabsf(gestureStartPoint.y - currentPosition.y);
-	
+		
 		if (deltaX >= kMinimumGestureLength && deltaY <= kMaximumVariance){
 			
 			[self setScrollEnabled:NO];
-		
+			
 			TISwipeableTableViewCell * cell = (TISwipeableTableViewCell *)[self cellForRowAtIndexPath:[self indexPathForRowAtPoint:gestureStartPoint]];
 			
 			if (cell.backView.hidden && [touch.view isKindOfClass:[TISwipeableTableViewCellView class]]){
@@ -131,7 +131,7 @@ NSInteger const kMaximumVariance = 8;
 	if ([self supportsSwipingForCellAtPoint:gestureStartPoint]){
 		
 		TISwipeableTableViewCell * cell = (TISwipeableTableViewCell *)[self cellForRowAtIndexPath:[self indexPathForRowAtPoint:gestureStartPoint]];
-	
+		
 		if ([touch.view isKindOfClass:[TISwipeableTableViewCellView class]] && cell.isSelected 
 			&& !cell.contentViewMoving && [self.delegate respondsToSelector:@selector(tableView:didSelectRowAtIndexPath:)]){
 			[self.delegate tableView:self didSelectRowAtIndexPath:[self indexPathForCell:cell]];
@@ -180,7 +180,7 @@ NSInteger const kMaximumVariance = 8;
 - (NSString *)description {
 	return [NSString stringWithFormat:@"<TISwipeableTableView %p 'Handling swiping like a boss since 1861'>", self];
 }
-				 
+
 - (void)dealloc {
 	
 	[self setDelegate:nil];
@@ -225,6 +225,7 @@ NSInteger const kMaximumVariance = 8;
 @end
 
 @interface TISwipeableTableViewCell (Private)
+- (void)initialSetup;
 - (CAAnimationGroup *)bounceAnimationWithHideDuration:(CGFloat)hideDuration initialXOrigin:(CGFloat)originalX;
 @end
 
@@ -240,35 +241,48 @@ NSInteger const kMaximumVariance = 8;
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
 	
     if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])){
-		
-		[self setBackgroundColor:[UIColor clearColor]];
-		
-		contentView = [[TISwipeableTableViewCellView alloc] initWithFrame:CGRectZero];
-		[contentView setClipsToBounds:YES];
-		[contentView setOpaque:YES];
-		[contentView setBackgroundColor:[UIColor clearColor]];
-		
-		backView = [[TISwipeableTableViewCellBackView alloc] initWithFrame:CGRectZero];
-		[backView setOpaque:YES];
-		[backView setClipsToBounds:YES];
-		[backView setHidden:YES];
-		[backView setBackgroundColor:[UIColor clearColor]];
-
-		[self addSubview:backView];
-		[self addSubview:contentView];
-		
-		[contentView release];
-		[backView release];
-		
-		contentViewMoving = NO;
-		shouldSupportSwiping = YES;
-		shouldBounce = YES;
-		
-		[self setSelected:NO];
-		[self hideBackView];
+		[self initialSetup];
     }
 	
     return self;
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder {
+	
+	if ((self = [super initWithCoder:aDecoder])){
+		[self initialSetup];
+	}
+	
+	return self;
+}
+
+- (void)initialSetup {
+	
+	[self setBackgroundColor:[UIColor clearColor]];
+	
+	contentView = [[TISwipeableTableViewCellView alloc] initWithFrame:CGRectZero];
+	[contentView setClipsToBounds:YES];
+	[contentView setOpaque:YES];
+	[contentView setBackgroundColor:[UIColor clearColor]];
+	
+	backView = [[TISwipeableTableViewCellBackView alloc] initWithFrame:CGRectZero];
+	[backView setOpaque:YES];
+	[backView setClipsToBounds:YES];
+	[backView setHidden:YES];
+	[backView setBackgroundColor:[UIColor clearColor]];
+	
+	[self addSubview:backView];
+	[self addSubview:contentView];
+	
+	[contentView release];
+	[backView release];
+	
+	contentViewMoving = NO;
+	shouldSupportSwiping = YES;
+	shouldBounce = YES;
+	
+	[self setSelected:NO];
+	[self hideBackView];
 }
 
 - (void)prepareForReuse {
@@ -281,10 +295,10 @@ NSInteger const kMaximumVariance = 8;
 	
 	[super setFrame:aFrame];
 	
-	CGRect bound = [self bounds];
-	bound.size.height -= 1;
-	[backView setFrame:bound];	
-	[contentView setFrame:bound];
+	CGRect newBounds = self.bounds;
+	newBounds.size.height -= 1;
+	[backView setFrame:newBounds];	
+	[contentView setFrame:newBounds];
 }
 
 - (void)setNeedsDisplay {
@@ -409,7 +423,7 @@ NSInteger const kMaximumVariance = 8;
 }
 
 - (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag {
-		
+	
 	if (anim == [contentView.layer animationForKey:@"reveal"]){
 		[contentView.layer removeAnimationForKey:@"reveal"];
 		
@@ -423,7 +437,7 @@ NSInteger const kMaximumVariance = 8;
 		[contentView.layer removeAnimationForKey:@"bounce"];
 		[self resetViews];
 	}
-		
+	
 	if (anim == [backView.layer animationForKey:@"hide"]){
 		[backView.layer removeAnimationForKey:@"hide"];
 	}
@@ -453,14 +467,14 @@ NSInteger const kMaximumVariance = 8;
 		[animation1 setDuration:bounceDuration];
 		[animation1 setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear]];
 		[animation1 setBeginTime:hideDuration];
-	
+		
 		CABasicAnimation * animation2 = [CABasicAnimation animationWithKeyPath:@"position.x"];
 		[animation2 setFromValue:[NSNumber numberWithFloat:-20]];
 		[animation2 setToValue:[NSNumber numberWithFloat:15]];
 		[animation2 setDuration:bounceDuration];
 		[animation2 setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear]];
 		[animation2 setBeginTime:(hideDuration + bounceDuration)];
-	
+		
 		CABasicAnimation * animation3 = [CABasicAnimation animationWithKeyPath:@"position.x"];
 		[animation3 setFromValue:[NSNumber numberWithFloat:15]];
 		[animation3 setToValue:[NSNumber numberWithFloat:0]];
