@@ -34,6 +34,7 @@ NSInteger const kMaximumVariance = 8;
 	
 	if ((self = [super initWithFrame:frame style:style])){
 		[self setDelaysContentTouches:NO];
+        
 	}
 	
 	return self;
@@ -64,7 +65,8 @@ NSInteger const kMaximumVariance = 8;
 	
 	UITableViewCell * testCell = [self cellForRowAtIndexPath:[self indexPathForRowAtPoint:gestureStartPoint]];
 	if ([testCell isKindOfClass:[TISwipeableTableViewCell class]]){
-		[(TISwipeableTableViewCell *)testCell setSelected:YES];
+        [self selectRowAtIndexPath:[self indexPathForCell:testCell] animated:YES scrollPosition:UITableViewScrollPositionNone];
+        
 	}
 }
 
@@ -79,9 +81,7 @@ NSInteger const kMaximumVariance = 8;
 	
 	if ([self supportsSwipingForCellAtPoint:gestureStartPoint]){
 		[self performSelector:@selector(highlightTouchedRow) withObject:nil afterDelay:0.06];	
-	}
-	else
-	{
+	} else {
 		[super touchesBegan:touches withEvent:event];
 	}
 }
@@ -117,9 +117,7 @@ NSInteger const kMaximumVariance = 8;
 			
 			[self setScrollEnabled:YES];
 		}
-	}
-	else
-	{
+	} else {
 		[super touchesMoved:touches withEvent:event];
 	}
 }
@@ -131,16 +129,16 @@ NSInteger const kMaximumVariance = 8;
 	if ([self supportsSwipingForCellAtPoint:gestureStartPoint]){
 		
 		TISwipeableTableViewCell * cell = (TISwipeableTableViewCell *)[self cellForRowAtIndexPath:[self indexPathForRowAtPoint:gestureStartPoint]];
-		
+        
+		[self performSelector:@selector(highlightTouchedRow) withObject:nil];
+        
 		if ([touch.view isKindOfClass:[TISwipeableTableViewCellView class]] && cell.isSelected 
 			&& !cell.contentViewMoving && [self.delegate respondsToSelector:@selector(tableView:didSelectRowAtIndexPath:)]){
 			[self.delegate tableView:self didSelectRowAtIndexPath:[self indexPathForCell:cell]];
 		}
 		
-		[self touchesCancelled:touches withEvent:event];
-	}
-	else
-	{
+		//[self touchesCancelled:touches withEvent:event];
+	} else {
 		[super touchesEnded:touches withEvent:event];
 	}
 }
@@ -150,7 +148,7 @@ NSInteger const kMaximumVariance = 8;
 	if ([self supportsSwipingForCellAtPoint:gestureStartPoint]){
 		
 		[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(highlightTouchedRow) object:nil];
-		[(TISwipeableTableViewCell *)[self cellForRowAtIndexPath:[self indexPathForRowAtPoint:gestureStartPoint]] setSelected:NO];
+        [self deselectRowAtIndexPath:[self indexPathForRowAtPoint:gestureStartPoint] animated:YES];
 		
 	}
 	else
@@ -232,7 +230,6 @@ NSInteger const kMaximumVariance = 8;
 @implementation TISwipeableTableViewCell
 @synthesize backView;
 @synthesize contentViewMoving;
-@synthesize selected;
 @synthesize shouldSupportSwiping;
 @synthesize shouldBounce;
 
@@ -318,8 +315,7 @@ NSInteger const kMaximumVariance = 8;
 }
 
 - (void)setSelected:(BOOL)flag {
-	
-	selected = flag;
+	[super setSelected:flag];
 	[self setNeedsDisplay];
 }
 
@@ -428,7 +424,8 @@ NSInteger const kMaximumVariance = 8;
 		[contentView.layer removeAnimationForKey:@"reveal"];
 		
 		[self backViewDidAppear];
-		[self setSelected:NO];
+        UITableView *tableView = (UITableView *) [self superview];
+        [tableView deselectRowAtIndexPath:[tableView indexPathForCell:self] animated:YES];
 		
 		contentViewMoving = NO;
 	}
