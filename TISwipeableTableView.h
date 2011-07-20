@@ -29,6 +29,11 @@
 #import <Foundation/Foundation.h>
 #import <QuartzCore/QuartzCore.h>
 
+typedef enum {
+    TISwipeableTableViewDirectionLeft = 1 << 0,
+    TISwipeableTableViewDirectionRight = 1 << 1
+} TISwipeableTableViewDirection;
+
 //==========================================================
 // - TISwipeableTableView
 //==========================================================
@@ -50,6 +55,7 @@
 @property (nonatomic, assign) id <TISwipeableTableViewDelegate> swipeDelegate;
 @property (nonatomic, retain) NSIndexPath * indexOfVisibleBackView;
 @property (nonatomic, getter = shoudAutoDeselect) BOOL autoDeselect;
+@property (nonatomic) TISwipeableTableViewDirection allowedSwipeDirection;
 
 - (void)hideVisibleBackView:(BOOL)animated;
 
@@ -88,7 +94,7 @@
 - (void)backViewWillDisappear;
 - (void)backViewDidDisappear;
 
-- (void)revealBackView;
+- (void)revealBackView:(TISwipeableTableViewDirection)direction;
 - (void)hideBackView;
 - (void)resetViews;
 

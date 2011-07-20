@@ -24,6 +24,7 @@
 @synthesize swipeDelegate;
 @synthesize indexOfVisibleBackView;
 @synthesize autoDeselect;
+@synthesize allowedSwipeDirection;
 
 NSInteger const kMinimumGestureLength = 18;
 NSInteger const kMaximumVariance = 8;
@@ -36,6 +37,7 @@ NSInteger const kMaximumVariance = 8;
 	if ((self = [super initWithFrame:frame style:style])){
 		[self setDelaysContentTouches:NO];
         autoDeselect = YES;
+        allowedSwipeDirection = TISwipeableTableViewDirectionLeft | TISwipeableTableViewDirectionRight;
 	}
 	
 	return self;
@@ -90,11 +92,18 @@ NSInteger const kMaximumVariance = 8;
 		UITouch * touch = [touches anyObject];
 		CGPoint currentPosition = [touch locationInView:self];
 		
-		CGFloat deltaX = fabsf(gestureStartPoint.x - currentPosition.x);
+		CGFloat deltaX = currentPosition.x - gestureStartPoint.x;
 		CGFloat deltaY = fabsf(gestureStartPoint.y - currentPosition.y);
-		
-		if (deltaX >= kMinimumGestureLength && deltaY <= kMaximumVariance){
-			
+
+		if (fabsf(deltaX) >= kMinimumGestureLength && deltaY <= kMaximumVariance){
+			TISwipeableTableViewDirection currentDirection = deltaX > 0 ? TISwipeableTableViewDirectionRight : TISwipeableTableViewDirectionLeft;
+            
+            if ((currentDirection & allowedSwipeDirection) != TISwipeableTableViewDirectionRight && (currentDirection & allowedSwipeDirection) != TISwipeableTableViewDirectionLeft) {
+                // if the swipe direction isn't allowed
+                [super touchesMoved:touches withEvent:event];
+                return;
+            }
+            
 			[self setScrollEnabled:NO];
 			
 			TISwipeableTableViewCell * cell = (TISwipeableTableViewCell *)[self cellForRowAtIndexPath:indexPath];
@@ -103,7 +112,7 @@ NSInteger const kMaximumVariance = 8;
 				
                 [self deselectRowAtIndexPath:[self indexPathForSelectedRow] animated:NO];
                 
-				[cell revealBackView];
+				[cell revealBackView:currentDirection];
 				
 				if ([swipeDelegate respondsToSelector:@selector(tableView:didSwipeCellAtIndexPath:)]){
 					[swipeDelegate tableView:self didSwipeCellAtIndexPath:indexPath];
@@ -367,7 +376,7 @@ NSInteger const kMaximumVariance = 8;
 
 #pragma mark -
 #pragma mark Back View Show / Hide
-- (void)revealBackView {
+- (void)revealBackView:(TISwipeableTableViewDirection)direction {
 	
 	if (!contentViewMoving && backView.hidden){
 		
@@ -375,9 +384,11 @@ NSInteger const kMaximumVariance = 8;
 		
 		[backView.layer setHidden:NO];
 		[backView setNeedsDisplay];
+        
+        CGFloat toPositionX = direction == TISwipeableTableViewDirectionRight ? contentView.frame.size.width : -contentView.frame.size.width;
 		
 		[contentView.layer setAnchorPoint:CGPointMake(0, 0.5)];
-		[contentView.layer setPosition:CGPointMake(contentView.frame.size.width, contentView.layer.position.y)];
+		[contentView.layer setPosition:CGPointMake(toPositionX, contentView.layer.position.y)];
 		
 		CABasicAnimation * animation = [CABasicAnimation animationWithKeyPath:@"position.x"];
 		[animation setRemovedOnCompletion:NO];
