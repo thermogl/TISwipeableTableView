@@ -206,7 +206,7 @@ NSInteger const kMaximumVariance = 8;
 - (void)drawRect:(CGRect)rect {
 	
 	if (!self.hidden){
-		[(TISwipeableTableViewCell *)[self superview] drawContentView:rect];
+		[(TISwipeableTableViewCell *)self.superview drawContentView:rect];
 	}
 	else
 	{
@@ -219,7 +219,7 @@ NSInteger const kMaximumVariance = 8;
 - (void)drawRect:(CGRect)rect {
 	
 	if (!self.hidden){
-		[(TISwipeableTableViewCell *)[self superview] drawBackView:rect];
+		[(TISwipeableTableViewCell *)self.superview drawBackView:rect];
 	}
 	else
 	{
