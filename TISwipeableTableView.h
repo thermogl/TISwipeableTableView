@@ -49,6 +49,7 @@
 
 @property (nonatomic, assign) id <TISwipeableTableViewDelegate> swipeDelegate;
 @property (nonatomic, retain) NSIndexPath * indexOfVisibleBackView;
+@property (nonatomic, getter = shoudAutoDeselect) BOOL autoDeselect;
 
 - (void)hideVisibleBackView:(BOOL)animated;
 

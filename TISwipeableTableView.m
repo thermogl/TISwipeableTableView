@@ -23,6 +23,7 @@
 @implementation TISwipeableTableView
 @synthesize swipeDelegate;
 @synthesize indexOfVisibleBackView;
+@synthesize autoDeselect;
 
 NSInteger const kMinimumGestureLength = 18;
 NSInteger const kMaximumVariance = 8;
@@ -34,7 +35,7 @@ NSInteger const kMaximumVariance = 8;
 	
 	if ((self = [super initWithFrame:frame style:style])){
 		[self setDelaysContentTouches:NO];
-        
+        autoDeselect = YES;
 	}
 	
 	return self;
@@ -65,7 +66,7 @@ NSInteger const kMaximumVariance = 8;
     NSIndexPath *indexPath = [self indexPathForRowAtPoint:gestureStartPoint];
 	UITableViewCell * testCell = [self cellForRowAtIndexPath:indexPath];
 	if ([testCell isKindOfClass:[TISwipeableTableViewCell class]] && ![testCell isSelected]){
-        [self selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
+        [self selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
         
 	}
 }
@@ -100,7 +101,7 @@ NSInteger const kMaximumVariance = 8;
 			
 			if (cell.backView.hidden && [touch.view isKindOfClass:[TISwipeableTableViewCellView class]]){
 				
-                [self deselectRowAtIndexPath:[self indexPathForSelectedRow] animated:YES];
+                [self deselectRowAtIndexPath:[self indexPathForSelectedRow] animated:NO];
                 
 				[cell revealBackView];
 				
@@ -137,6 +138,9 @@ NSInteger const kMaximumVariance = 8;
             }
         }
 		
+        if (autoDeselect) {
+            [self touchesCancelled:touches withEvent:event];
+        }
 	} else {
 		[super touchesEnded:touches withEvent:event];
 	}
@@ -152,7 +156,7 @@ NSInteger const kMaximumVariance = 8;
                 indexPath = [[self delegate] tableView:self willDeselectRowAtIndexPath:indexPath];
             }
             
-            [self deselectRowAtIndexPath:indexPath animated:YES];
+            [self deselectRowAtIndexPath:indexPath animated:NO];
             
             if ([[self delegate] respondsToSelector:@selector(tableView:didDeselectRowAtIndexPath:)]) {
                 [[self delegate] tableView:self didDeselectRowAtIndexPath:indexPath];
@@ -437,7 +441,7 @@ NSInteger const kMaximumVariance = 8;
 		
 		[self backViewDidAppear];
         UITableView *tableView = (UITableView *) [self superview];
-        [tableView deselectRowAtIndexPath:[tableView indexPathForCell:self] animated:YES];
+        [tableView deselectRowAtIndexPath:[tableView indexPathForCell:self] animated:NO];
 		
 		contentViewMoving = NO;
 	}
