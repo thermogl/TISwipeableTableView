@@ -26,25 +26,31 @@
 //	ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
+#import <QuartzCore/QuartzCore.h>
 
 //==========================================================
-// - TISwipeableTableViewController
+// - TISwipeableTableView
 //==========================================================
 
-@interface TISwipeableTableViewController : UITableViewController {
+@protocol TISwipeableTableViewDelegate <NSObject>
+@optional
+- (BOOL)tableView:(UITableView *)tableView shouldSwipeCellAtIndexPath:(NSIndexPath *)indexPath; // Thanks to Martin Destagnol (@mdestagnol) for this delegate method.
+- (void)tableView:(UITableView *)tableView didSwipeCellAtIndexPath:(NSIndexPath *)indexPath;
+@end
+
+@interface TISwipeableTableView : UITableView {
+
+	id <TISwipeableTableViewDelegate> swipeDelegate;
+	
 	NSIndexPath * indexOfVisibleBackView;
+	CGPoint gestureStartPoint;
 }
 
-@property (nonatomic, retain, readonly) NSIndexPath * indexOfVisibleBackView;
+@property (nonatomic, assign) id <TISwipeableTableViewDelegate> swipeDelegate;
+@property (nonatomic, retain) NSIndexPath * indexOfVisibleBackView;
 
-// Thanks to Martin Destagnol (@mdestagnol) for this method.
-- (BOOL)tableView:(UITableView *)tableView shouldSwipeCellAtIndexPath:(NSIndexPath *)indexPath;
-
-- (void)tableView:(UITableView *)tableView didSwipeCellAtIndexPath:(NSIndexPath *)indexPath;
-
-- (void)revealBackViewAtIndexPath:(NSIndexPath *)indexPath;
-- (void)hideVisibleBackView;
+- (void)hideVisibleBackView:(BOOL)animated;
 
 @end
 
@@ -58,18 +64,20 @@
 @interface TISwipeableTableViewCellBackView : UIView
 @end
 
-@interface TISwipeableTableViewCell : UITableViewCell <UIGestureRecognizerDelegate> {
-	
+@interface TISwipeableTableViewCell : UITableViewCell {
+
 	UIView * contentView;
 	UIView * backView;
 	
 	BOOL contentViewMoving;
+	BOOL selected;
 	BOOL shouldSupportSwiping;
 	BOOL shouldBounce;
 }
 
 @property (nonatomic, readonly) UIView * backView;
 @property (nonatomic, assign) BOOL contentViewMoving;
+@property (nonatomic, getter=isSelected) BOOL selected;
 @property (nonatomic, assign) BOOL shouldSupportSwiping;
 @property (nonatomic, assign) BOOL shouldBounce;
 

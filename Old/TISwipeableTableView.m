@@ -7,56 +7,192 @@
 //
 
 #import "TISwipeableTableView.h"
-#import <QuartzCore/QuartzCore.h>
 
+#pragma mark -
+#pragma mark TISwipeableTableView
+#pragma mark -
 //==========================================================
-// - TISwipeableTableViewController
+// - TISwipeableTableView
 //==========================================================
 
-@interface TISwipeableTableViewController ()
-@property (nonatomic, retain) NSIndexPath * indexOfVisibleBackView;
+@interface TISwipeableTableView (Private)
+- (BOOL)supportsSwipingForCellAtPoint:(CGPoint)point;
+- (void)highlightTouchedRow;
 @end
 
-@implementation TISwipeableTableViewController
+@implementation TISwipeableTableView
+@synthesize swipeDelegate;
 @synthesize indexOfVisibleBackView;
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	[self hideVisibleBackView];
-}
+NSInteger const kMinimumGestureLength = 18;
+NSInteger const kMaximumVariance = 8;
 
-- (BOOL)tableView:(UITableView *)tableView shouldSwipeCellAtIndexPath:(NSIndexPath *)indexPath {
-	return YES;
-}
+#pragma mark -
+#pragma mark Init
 
-- (void)tableView:(UITableView *)tableView didSwipeCellAtIndexPath:(NSIndexPath *)indexPath {
+- (id)initWithFrame:(CGRect)frame style:(UITableViewStyle)style {
 	
-	[self hideVisibleBackView];
-	[self setIndexOfVisibleBackView:indexPath];
-}
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-	[self hideVisibleBackView];
-}
-
-- (void)revealBackViewAtIndexPath:(NSIndexPath *)indexPath {
-	[self hideVisibleBackView];
-	[(TISwipeableTableViewCell *)[self.tableView cellForRowAtIndexPath:indexPath] revealBackView];
-	[self setIndexOfVisibleBackView:indexPath];
-}
-
-- (void)hideVisibleBackView {
+	if ((self = [super initWithFrame:frame style:style])){
+		[self setDelaysContentTouches:NO];
+	}
 	
-	[(TISwipeableTableViewCell *)[self.tableView cellForRowAtIndexPath:indexOfVisibleBackView] hideBackView];
-	[self setIndexOfVisibleBackView:nil];
+	return self;
+}
+
+#pragma mark -
+#pragma mark Helpers
+- (BOOL)supportsSwipingForCellAtPoint:(CGPoint)point {
+	
+	NSIndexPath * indexPath = [self indexPathForRowAtPoint:point];
+	UITableViewCell * testCell = [self cellForRowAtIndexPath:indexPath];
+	
+	BOOL supportsSwiping = NO;
+	
+	if ([testCell isKindOfClass:[TISwipeableTableViewCell class]]){
+		supportsSwiping = ((TISwipeableTableViewCell *)testCell).shouldSupportSwiping;
+	}
+	
+	// Thanks to Martin Destagnol (@mdestagnol) for this delegate method.
+	if (supportsSwiping && [swipeDelegate respondsToSelector:@selector(tableView:shouldSwipeCellAtIndexPath:)]){
+		supportsSwiping = [swipeDelegate tableView:self shouldSwipeCellAtIndexPath:indexPath];
+	}
+	
+	return supportsSwiping;
+}
+
+- (void)highlightTouchedRow {
+	
+	UITableViewCell * testCell = [self cellForRowAtIndexPath:[self indexPathForRowAtPoint:gestureStartPoint]];
+	if ([testCell isKindOfClass:[TISwipeableTableViewCell class]]){
+		[(TISwipeableTableViewCell *)testCell setSelected:YES];
+	}
+}
+
+#pragma mark -
+#pragma mark Touches
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+	
+	[self hideVisibleBackView:YES];
+	
+	UITouch * touch = [touches anyObject];
+	gestureStartPoint = [touch locationInView:self];
+	
+	if ([self supportsSwipingForCellAtPoint:gestureStartPoint]){
+		[self performSelector:@selector(highlightTouchedRow) withObject:nil afterDelay:0.06];	
+	}
+	else
+	{
+		[super touchesBegan:touches withEvent:event];
+	}
+}
+
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
+	
+	if ([self supportsSwipingForCellAtPoint:gestureStartPoint]){
+		
+		[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(highlightTouchedRow) object:nil];
+		
+		UITouch * touch = [touches anyObject];
+		CGPoint currentPosition = [touch locationInView:self];
+		
+		CGFloat deltaX = fabsf(gestureStartPoint.x - currentPosition.x);
+		CGFloat deltaY = fabsf(gestureStartPoint.y - currentPosition.y);
+		
+		if (deltaX >= kMinimumGestureLength && deltaY <= kMaximumVariance){
+			
+			[self setScrollEnabled:NO];
+			
+			TISwipeableTableViewCell * cell = (TISwipeableTableViewCell *)[self cellForRowAtIndexPath:[self indexPathForRowAtPoint:gestureStartPoint]];
+			
+			if (cell.backView.hidden && [touch.view isKindOfClass:[TISwipeableTableViewCellView class]]){
+				
+				[cell revealBackView];
+				
+				if ([swipeDelegate respondsToSelector:@selector(tableView:didSwipeCellAtIndexPath:)]){
+					[swipeDelegate tableView:self didSwipeCellAtIndexPath:[self indexPathForRowAtPoint:gestureStartPoint]];
+				}
+				
+				[self setIndexOfVisibleBackView:[self indexPathForCell:cell]];
+			}
+			
+			[self setScrollEnabled:YES];
+		}
+	}
+	else
+	{
+		[super touchesMoved:touches withEvent:event];
+	}
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+	
+	UITouch * touch = [touches anyObject];
+	
+	if ([self supportsSwipingForCellAtPoint:gestureStartPoint]){
+		
+		TISwipeableTableViewCell * cell = (TISwipeableTableViewCell *)[self cellForRowAtIndexPath:[self indexPathForRowAtPoint:gestureStartPoint]];
+		
+		if ([touch.view isKindOfClass:[TISwipeableTableViewCellView class]] && cell.isSelected 
+			&& !cell.contentViewMoving && [self.delegate respondsToSelector:@selector(tableView:didSelectRowAtIndexPath:)]){
+			[self.delegate tableView:self didSelectRowAtIndexPath:[self indexPathForCell:cell]];
+		}
+		
+		[self touchesCancelled:touches withEvent:event];
+	}
+	else
+	{
+		[super touchesEnded:touches withEvent:event];
+	}
+}
+
+- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
+	
+	if ([self supportsSwipingForCellAtPoint:gestureStartPoint]){
+		
+		[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(highlightTouchedRow) object:nil];
+		[(TISwipeableTableViewCell *)[self cellForRowAtIndexPath:[self indexPathForRowAtPoint:gestureStartPoint]] setSelected:NO];
+		
+	}
+	else
+	{
+		[super touchesCancelled:touches withEvent:event];
+	}
+}
+
+#pragma mark -
+#pragma mark Other Stuff
+- (void)hideVisibleBackView:(BOOL)animated {
+	
+	if (indexOfVisibleBackView){
+		
+		if (animated){
+			[(TISwipeableTableViewCell *)[self cellForRowAtIndexPath:indexOfVisibleBackView] hideBackView];
+		}
+		else
+		{
+			[(TISwipeableTableViewCell *)[self cellForRowAtIndexPath:indexOfVisibleBackView] resetViews];
+		}
+		
+		[self setIndexOfVisibleBackView:nil];
+	}
+}
+
+- (NSString *)description {
+	return [NSString stringWithFormat:@"<TISwipeableTableView %p 'Handling swiping like a boss since 1861'>", self];
 }
 
 - (void)dealloc {
+	
+	[self setDelegate:nil];
 	[indexOfVisibleBackView release];
 	[super dealloc];
 }
 
 @end
 
+#pragma mark -
+#pragma mark TISwipeableTableViewCell
+#pragma mark -
 //==========================================================
 // - TISwipeableTableViewCell
 //==========================================================
@@ -96,6 +232,7 @@
 @implementation TISwipeableTableViewCell
 @synthesize backView;
 @synthesize contentViewMoving;
+@synthesize selected;
 @synthesize shouldSupportSwiping;
 @synthesize shouldBounce;
 
@@ -127,13 +264,6 @@
 	[contentView setClipsToBounds:YES];
 	[contentView setOpaque:YES];
 	[contentView setBackgroundColor:[UIColor clearColor]];
-	
-	UISwipeGestureRecognizer * swipeRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(cellWasSwiped:)];
-	[swipeRecognizer setDelegate:self];
-	[swipeRecognizer setDirection:(UISwipeGestureRecognizerDirectionLeft |
-								   UISwipeGestureRecognizerDirectionRight)];
-	[contentView addGestureRecognizer:swipeRecognizer];
-	[swipeRecognizer release];
 	
 	backView = [[TISwipeableTableViewCellBackView alloc] initWithFrame:CGRectZero];
 	[backView setOpaque:YES];
@@ -187,21 +317,9 @@
 	// Same as above.
 }
 
-- (void)setHighlighted:(BOOL)highlighted {
-	[self setHighlighted:highlighted animated:NO];
-}
-
-- (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated {
-	[super setHighlighted:highlighted animated:animated];
-	[self setNeedsDisplay];
-}
-
 - (void)setSelected:(BOOL)flag {
-	[self setSelected:flag animated:NO];
-}
-
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-	[super setSelected:selected animated:animated];
+	
+	selected = flag;
 	[self setNeedsDisplay];
 }
 
@@ -237,30 +355,6 @@
 
 #pragma mark -
 #pragma mark Back View Show / Hide
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
-	return (gestureRecognizer.view == contentView);
-}
-
-- (void)cellWasSwiped:(UISwipeGestureRecognizer *)recognizer {
-	
-	UITableView * tableView = (UITableView *)self.superview;
-	id delegate = tableView.nextResponder; // Hopefully this is a TISwipeableTableViewController.
-	
-	if ([delegate respondsToSelector:@selector(tableView:shouldSwipeCellAtIndexPath:)]){
-		
-		NSIndexPath * myIndexPath = [tableView indexPathForCell:self];
-		
-		if ([delegate tableView:tableView shouldSwipeCellAtIndexPath:myIndexPath]){
-			
-			[self revealBackView];
-			
-			if ([delegate respondsToSelector:@selector(tableView:didSwipeCellAtIndexPath:)]){
-				[delegate tableView:tableView didSwipeCellAtIndexPath:myIndexPath];
-			}
-		}
-	}
-}
-
 - (void)revealBackView {
 	
 	if (!contentViewMoving && backView.hidden){
@@ -408,4 +502,5 @@
 	NSString * extraInfo = backView.hidden ? @"ContentView visible": @"BackView visible";
 	return [NSString stringWithFormat:@"<TISwipeableTableViewCell %p '%@'>", self, extraInfo];
 }
+
 @end

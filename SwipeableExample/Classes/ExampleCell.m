@@ -14,11 +14,11 @@
 
 - (void)setText:(NSString *)aString {
 	
-	if (aString != text){
-		[text release];
-		text = [aString retain];
-		[self setNeedsDisplay];
-	}
+	NSString * copy = [aString copy];
+	[text release];
+	text = copy;
+	
+	[self setNeedsDisplay];
 }
 
 - (void)buttonWasTapped:(UIButton *)button {
@@ -47,13 +47,7 @@
 
 - (void)drawContentView:(CGRect)rect {
 	
-	UIColor * textColour = [UIColor blackColor];
-	
-	if (self.selected) {
-		textColour = [UIColor whiteColor];
-		[[UIImage imageNamed:@"selectiongradient.png"] drawInRect:rect];
-	}
-	
+	UIColor * textColour = (self.selected || self.highlighted) ? [UIColor whiteColor] : [UIColor blackColor];	
 	[textColour set];
 	
 	UIFont * textFont = [UIFont boldSystemFontOfSize:22];
@@ -92,7 +86,6 @@
 }
 
 - (void)dealloc {
-	
 	[text release];
     [super dealloc];
 }

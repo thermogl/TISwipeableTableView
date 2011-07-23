@@ -22,7 +22,7 @@
 }
 
 @property (nonatomic, assign) id <ExampleCellDelegate> delegate;
-@property (nonatomic, retain) NSString * text;
+@property (nonatomic, copy) NSString * text;
 
 - (void)drawShadowsWithHeight:(CGFloat)shadowHeight opacity:(CGFloat)opacity InRect:(CGRect)rect forContext:(CGContextRef)context;
 

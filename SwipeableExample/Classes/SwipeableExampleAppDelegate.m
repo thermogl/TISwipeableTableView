@@ -9,33 +9,26 @@
 #import "SwipeableExampleAppDelegate.h"
 #import "RootViewController.h"
 
-
 @implementation SwipeableExampleAppDelegate
-
 @synthesize window;
 @synthesize navigationController;
-
 
 #pragma mark -
 #pragma mark Application lifecycle
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
-    // Override point for customization after app launch   
 	
-	// Obviously I never do anything like this, but it's quick for the example.
-	[self setWindow:[[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease]];
-	[self setNavigationController:[[[UINavigationController alloc] initWithRootViewController:[[[RootViewController alloc] initWithStyle:UITableViewStylePlain] autorelease]] autorelease]];
+	window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 	
-	[window addSubview:[navigationController view]];
+	RootViewController * viewController = [[RootViewController alloc] initWithStyle:UITableViewStylePlain];
+	navigationController = [[UINavigationController alloc] initWithRootViewController:viewController];
+	[viewController release];
+	
+	[window addSubview:navigationController.view];
     [window makeKeyAndVisible];
+	
 	return YES;
 }
-
-
-- (void)applicationWillTerminate:(UIApplication *)application {
-	// Save data if appropriate
-}
-
 
 #pragma mark -
 #pragma mark Memory management

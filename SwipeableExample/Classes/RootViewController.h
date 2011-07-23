@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 #import "ExampleCell.h"
 
-@interface RootViewController : UITableViewController <TISwipeableTableViewDelegate, ExampleCellDelegate>
+@interface RootViewController : TISwipeableTableViewController  <ExampleCellDelegate>
 @end

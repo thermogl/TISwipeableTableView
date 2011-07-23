@@ -16,47 +16,30 @@
 
 - (void)viewDidLoad {
 	
-	TISwipeableTableView * aTableView = [[TISwipeableTableView alloc] initWithFrame:self.tableView.frame style:self.tableView.style];
-	[aTableView setDelegate:self];
-	[aTableView setDataSource:self];
-	[aTableView setSwipeDelegate:self];
-	[aTableView setRowHeight:54];
-	[self setTableView:aTableView];
-	[aTableView release];
-	
+	[self.tableView setRowHeight:54];
 	[self.navigationItem setTitle:@"Swipeable TableView"];
-	
     [super viewDidLoad];
 }
 
 #pragma mark -
 #pragma mark Table view data source
 
-// Customize the number of sections in the table view.
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
 }
 
-
-// Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return 10;
 }
 
-
-// Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     static NSString *CellIdentifier = @"Cell";
 	
 	ExampleCell * cell = (ExampleCell*)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
-		cell = [[[ExampleCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
-    }
+    if (!cell) cell = [[[ExampleCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
     
 	[cell setText:[NSString stringWithFormat:@"Swipe me! (Row %i)", indexPath.row]];
-	[cell setAccessoryType:UITableViewCellAccessoryCheckmark];
-	
 	[cell setDelegate:self];
 	
     return cell;
@@ -74,6 +57,9 @@
 											   otherButtonTitles:nil];
 	[alertView show];
 	[alertView release];
+	
+	[tableView deselectRowAtIndexPath:indexPath animated:YES];
+	[super tableView:tableView didSelectRowAtIndexPath:indexPath];
 }
 
 
@@ -82,6 +68,8 @@ static void completionCallback(SystemSoundID soundID, void * clientData) {
 }
 
 - (void)tableView:(UITableView *)tableView didSwipeCellAtIndexPath:(NSIndexPath *)indexPath {
+	
+	[super tableView:tableView didSwipeCellAtIndexPath:indexPath];
 	
 	NSString * path = [[NSBundle mainBundle] pathForResource:@"tick" ofType:@"wav"];
 	NSURL * fileURL = [NSURL fileURLWithPath:path isDirectory:NO];
@@ -96,8 +84,11 @@ static void completionCallback(SystemSoundID soundID, void * clientData) {
 	NSLog(@"%@", cell);
 }
 
-- (void)scrollViewDidScroll:(UIScrollView*)scrollView {
-	[(TISwipeableTableView*)self.tableView hideVisibleBackView:NO];
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+	[super scrollViewDidScroll:scrollView];
+	
+	// You gotta call super in all the methods you see here doing it.
+	// Otherwise, you will end up with cells not hiding their backViews.
 }
 
 @end
