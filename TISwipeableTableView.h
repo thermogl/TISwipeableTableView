@@ -44,7 +44,7 @@
 - (void)tableView:(UITableView *)tableView didSwipeCellAtIndexPath:(NSIndexPath *)indexPath;
 
 - (void)revealBackViewAtIndexPath:(NSIndexPath *)indexPath;
-- (void)hideVisibleBackView;
+- (void)hideVisibleBackView:(BOOL)animated;
 
 @end
 

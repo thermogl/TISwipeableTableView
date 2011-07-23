@@ -21,7 +21,7 @@
 @synthesize indexOfVisibleBackView;
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	[self hideVisibleBackView];
+	[self hideVisibleBackView:YES];
 }
 
 - (BOOL)tableView:(UITableView *)tableView shouldSwipeCellAtIndexPath:(NSIndexPath *)indexPath {
@@ -30,23 +30,26 @@
 
 - (void)tableView:(UITableView *)tableView didSwipeCellAtIndexPath:(NSIndexPath *)indexPath {
 	
-	[self hideVisibleBackView];
+	[self hideVisibleBackView:YES];
 	[self setIndexOfVisibleBackView:indexPath];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-	[self hideVisibleBackView];
+	[self hideVisibleBackView:YES];
 }
 
 - (void)revealBackViewAtIndexPath:(NSIndexPath *)indexPath {
-	[self hideVisibleBackView];
+	[self hideVisibleBackView:YES];
 	[(TISwipeableTableViewCell *)[self.tableView cellForRowAtIndexPath:indexPath] revealBackView];
 	[self setIndexOfVisibleBackView:indexPath];
 }
 
-- (void)hideVisibleBackView {
+- (void)hideVisibleBackView:(BOOL)animated {
 	
-	[(TISwipeableTableViewCell *)[self.tableView cellForRowAtIndexPath:indexOfVisibleBackView] hideBackView];
+	TISwipeableTableViewCell * cell = (TISwipeableTableViewCell *)[self.tableView cellForRowAtIndexPath:indexOfVisibleBackView];
+	if (animated) [cell hideBackView];
+	else [cell resetViews];
+	
 	[self setIndexOfVisibleBackView:nil];
 }
 
