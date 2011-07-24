@@ -153,9 +153,6 @@
 	contentViewMoving = NO;
 	shouldSupportSwiping = YES;
 	shouldBounce = YES;
-	
-	[self setSelected:NO];
-	[self hideBackView];
 }
 
 - (void)prepareForReuse {

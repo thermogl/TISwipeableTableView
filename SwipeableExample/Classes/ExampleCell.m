@@ -61,9 +61,8 @@
 
 - (void)drawBackView:(CGRect)rect {
 	
-	CGContextRef context = UIGraphicsGetCurrentContext();
 	[[UIImage imageNamed:@"meshpattern.png"] drawAsPatternInRect:rect];
-	[self drawShadowsWithHeight:10 opacity:0.3 InRect:rect forContext:context];
+	[self drawShadowsWithHeight:10 opacity:0.3 InRect:rect forContext:UIGraphicsGetCurrentContext()];
 }
 
 - (void)drawShadowsWithHeight:(CGFloat)shadowHeight opacity:(CGFloat)opacity InRect:(CGRect)rect forContext:(CGContextRef)context {
