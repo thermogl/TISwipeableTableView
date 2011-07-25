@@ -67,26 +67,16 @@
 @implementation TISwipeableTableViewCellView
 - (void)drawRect:(CGRect)rect {
 	
-	if (!self.hidden){
-		[(TISwipeableTableViewCell *)self.superview drawContentView:rect];
-	}
-	else
-	{
-		[super drawRect:rect];
-	}
+	if (self.hidden) [super drawRect:rect];
+	else [(TISwipeableTableViewCell *)self.superview drawContentView:rect];
 }
 @end
 
 @implementation TISwipeableTableViewCellBackView
 - (void)drawRect:(CGRect)rect {
 	
-	if (!self.hidden){
-		[(TISwipeableTableViewCell *)self.superview drawBackView:rect];
-	}
-	else
-	{
-		[super drawRect:rect];
-	}
+	if (self.hidden) [super drawRect:rect];
+	else [(TISwipeableTableViewCell *)self.superview drawBackView:rect];
 }
 
 @end
