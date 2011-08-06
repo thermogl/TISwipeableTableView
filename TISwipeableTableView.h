@@ -66,6 +66,8 @@
 	BOOL contentViewMoving;
 	BOOL shouldSupportSwiping;
 	BOOL shouldBounce;
+	
+	UITableViewCellSelectionStyle oldStyle;
 }
 
 @property (nonatomic, readonly) UIView * backView;

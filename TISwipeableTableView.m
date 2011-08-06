@@ -186,11 +186,8 @@
 }
 
 - (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated {
-	
-	if (backView.hidden){
-		[super setHighlighted:highlighted animated:animated];
-		[self setNeedsDisplay];
-	}
+	[super setHighlighted:highlighted animated:animated];
+	[self setNeedsDisplay];
 }
 
 - (void)setSelected:(BOOL)flag {
@@ -277,6 +274,9 @@
 		[animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear]];
 		[contentView.layer addAnimation:animation forKey:@"reveal"];
 		
+		oldStyle = self.selectionStyle;
+		[self setSelectionStyle:UITableViewCellSelectionStyleNone];
+		
 		[self backViewWillAppear];
 	}
 }
@@ -321,6 +321,8 @@
 	
 	[backView.layer setHidden:YES];
 	[backView.layer setOpacity:1.0];
+	
+	[self setSelectionStyle:oldStyle];
 	
 	[self backViewDidDisappear];
 }
