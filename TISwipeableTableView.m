@@ -20,6 +20,10 @@
 @implementation TISwipeableTableViewController
 @synthesize indexOfVisibleBackView;
 
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+	return ([indexPath compare:indexOfVisibleBackView] == NSOrderedSame) ? nil : indexPath;
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	[self hideVisibleBackView:YES];
 }
@@ -182,8 +186,11 @@
 }
 
 - (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated {
-	[super setHighlighted:highlighted animated:animated];
-	[self setNeedsDisplay];
+	
+	if (backView.hidden){
+		[super setHighlighted:highlighted animated:animated];
+		[self setNeedsDisplay];
+	}
 }
 
 - (void)setSelected:(BOOL)flag {
