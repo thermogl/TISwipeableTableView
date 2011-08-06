@@ -29,7 +29,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 10;
+    return 100;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -81,7 +81,15 @@ static void completionCallback(SystemSoundID soundID, void * clientData) {
 }
 
 - (void)cellBackButtonWasTapped:(ExampleCell *)cell {
-	NSLog(@"%@", cell);
+	
+	UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"BackView Button" 
+														 message:@"WHOA! YOU TAPPED A BACKVIEW BUTTON!" 
+														delegate:nil cancelButtonTitle:@"Sorry" 
+											   otherButtonTitles:nil];
+	[alertView show];
+	[alertView release];
+	
+	[self hideVisibleBackView:YES];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
