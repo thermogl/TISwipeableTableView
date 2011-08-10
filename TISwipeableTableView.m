@@ -147,6 +147,7 @@
 	contentViewMoving = NO;
 	shouldSupportSwiping = YES;
 	shouldBounce = YES;
+	oldStyle = self.selectionStyle;
 }
 
 - (void)prepareForReuse {
@@ -264,6 +265,8 @@
 		[backView.layer setHidden:NO];
 		[backView setNeedsDisplay];
 		
+		[self backViewWillAppear];
+		
 		[contentView.layer setAnchorPoint:CGPointMake(0, 0.5)];
 		[contentView.layer setPosition:CGPointMake(contentView.frame.size.width, contentView.layer.position.y)];
 		
@@ -276,8 +279,6 @@
 		
 		oldStyle = self.selectionStyle;
 		[self setSelectionStyle:UITableViewCellSelectionStyleNone];
-		
-		[self backViewWillAppear];
 	}
 }
 
