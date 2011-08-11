@@ -70,17 +70,13 @@
 
 @implementation TISwipeableTableViewCellView
 - (void)drawRect:(CGRect)rect {
-	
-	if (self.hidden) [super drawRect:rect];
-	else [(TISwipeableTableViewCell *)self.superview drawContentView:rect];
+	[(TISwipeableTableViewCell *)self.superview drawContentView:rect];
 }
 @end
 
 @implementation TISwipeableTableViewCellBackView
 - (void)drawRect:(CGRect)rect {
-	
-	if (self.hidden) [super drawRect:rect];
-	else [(TISwipeableTableViewCell *)self.superview drawBackView:rect];
+	[(TISwipeableTableViewCell *)self.superview drawBackView:rect];
 }
 
 @end
@@ -169,8 +165,8 @@
 - (void)setNeedsDisplay {
 	
 	[super setNeedsDisplay];
-	[contentView setNeedsDisplay];
-	[backView setNeedsDisplay];
+	if (!contentView.hidden) [contentView setNeedsDisplay];
+	if (!backView.hidden) [backView setNeedsDisplay];
 }
 
 - (void)setAccessoryType:(UITableViewCellAccessoryType)accessoryType {
