@@ -122,7 +122,6 @@
 	[contentView setBackgroundColor:[UIColor clearColor]];
 	
 	UISwipeGestureRecognizer * swipeRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(cellWasSwiped:)];
-	[swipeRecognizer setDelegate:self];
 	[swipeRecognizer setDirection:(UISwipeGestureRecognizerDirectionLeft |
 								   UISwipeGestureRecognizerDirectionRight)];
 	[contentView addGestureRecognizer:swipeRecognizer];
@@ -228,9 +227,6 @@
 
 #pragma mark -
 #pragma mark Back View Show / Hide
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
-	return (gestureRecognizer.view == contentView);
-}
 
 - (void)cellWasSwiped:(UISwipeGestureRecognizer *)recognizer {
 	
