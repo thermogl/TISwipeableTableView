@@ -40,7 +40,6 @@
 
 // Thanks to Martin Destagnol (@mdestagnol) for this method.
 - (BOOL)tableView:(UITableView *)tableView shouldSwipeCellAtIndexPath:(NSIndexPath *)indexPath;
-
 - (void)tableView:(UITableView *)tableView didSwipeCellAtIndexPath:(NSIndexPath *)indexPath;
 
 - (void)revealBackViewAtIndexPath:(NSIndexPath *)indexPath;
