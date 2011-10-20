@@ -7,6 +7,11 @@ See the "SwipeableExample" app for the correct usage.
 
 ## License
 
+This control is dual licensed:
+You can use it for free under the BSD licence below or, 
+If you require non-attribution you can purchase the commercial licence available at
+http://www.cocoacontrols.com/authors/thermogl
+
 Copyright (c) 2010 - 2011 Tom Irving. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
