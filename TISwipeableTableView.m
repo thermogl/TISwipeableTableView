@@ -92,8 +92,7 @@
 @synthesize shouldSupportSwiping;
 @synthesize shouldBounce;
 
-#pragma mark -
-#pragma mark Init / Overrides
+#pragma mark - Init / Overrides
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
 	
     if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])){
@@ -195,8 +194,7 @@
 	[self setNeedsDisplay];
 }
 
-#pragma mark -
-#pragma mark Subclass Methods
+#pragma mark - Subclass Methods
 // Implement the following in a subclass
 - (void)drawContentView:(CGRect)rect {
 	
@@ -225,9 +223,7 @@
 
 //===============================//
 
-#pragma mark -
-#pragma mark Back View Show / Hide
-
+#pragma mark - Back View Show / Hide
 - (void)cellWasSwiped:(UISwipeGestureRecognizer *)recognizer {
 	
 	UITableView * tableView = (UITableView *)self.superview;
@@ -393,8 +389,7 @@
 	return hideAnimations;
 }
 
-#pragma mark -
-#pragma mark Other
+#pragma mark - Other
 - (NSString *)description {
 	
 	NSString * extraInfo = backView.hidden ? @"ContentView visible": @"BackView visible";
