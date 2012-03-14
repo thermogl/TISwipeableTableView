@@ -36,7 +36,7 @@
     
     static NSString *CellIdentifier = @"Cell";
 	
-	ExampleCell * cell = (ExampleCell*)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+	ExampleCell * cell = (ExampleCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (!cell) cell = [[[ExampleCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
     
 	[cell setText:[NSString stringWithFormat:@"Swipe me! (Row %i)", indexPath.row]];
@@ -48,6 +48,7 @@
 #pragma mark -
 #pragma mark Table view delegate
 
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	
 	UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"Cell Selected" 
@@ -55,6 +56,7 @@
 														delegate:nil 
 											   cancelButtonTitle:@"OK" 
 											   otherButtonTitles:nil];
+	
 	[alertView show];
 	[alertView release];
 	

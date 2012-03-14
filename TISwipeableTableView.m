@@ -393,6 +393,6 @@
 - (NSString *)description {
 	
 	NSString * extraInfo = backView.hidden ? @"ContentView visible": @"BackView visible";
-	return [NSString stringWithFormat:@"<TISwipeableTableViewCell %p '%@'>", self, extraInfo];
+	return [NSString stringWithFormat:@"<TISwipeableTableViewCell %p; '%@'>", self, extraInfo];
 }
 @end
