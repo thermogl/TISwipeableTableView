@@ -42,7 +42,7 @@
 - (BOOL)tableView:(UITableView *)tableView shouldSwipeCellAtIndexPath:(NSIndexPath *)indexPath;
 - (void)tableView:(UITableView *)tableView didSwipeCellAtIndexPath:(NSIndexPath *)indexPath;
 
-- (void)revealBackViewAtIndexPath:(NSIndexPath *)indexPath;
+- (void)revealBackViewAtIndexPath:(NSIndexPath *)indexPath animated:(BOOL)animated;
 - (void)hideVisibleBackView:(BOOL)animated;
 
 @end
@@ -63,7 +63,6 @@
 	UIView * backView;
 	
 	BOOL contentViewMoving;
-	BOOL shouldSupportSwiping;
 	BOOL shouldBounce;
 	
 	UITableViewCellSelectionStyle oldStyle;
@@ -71,19 +70,17 @@
 
 @property (nonatomic, readonly) UIView * backView;
 @property (nonatomic, assign) BOOL contentViewMoving;
-@property (nonatomic, assign) BOOL shouldSupportSwiping;
 @property (nonatomic, assign) BOOL shouldBounce;
 
 - (void)drawContentView:(CGRect)rect;
 - (void)drawBackView:(CGRect)rect;
 
-- (void)backViewWillAppear;
-- (void)backViewDidAppear;
-- (void)backViewWillDisappear;
-- (void)backViewDidDisappear;
+- (void)backViewWillAppear:(BOOL)animated;
+- (void)backViewDidAppear:(BOOL)animated;
+- (void)backViewWillDisappear:(BOOL)animated;
+- (void)backViewDidDisappear:(BOOL)animated;
 
-- (void)revealBackView;
-- (void)hideBackView;
-- (void)resetViews;
+- (void)revealBackViewAnimated:(BOOL)animated;
+- (void)hideBackViewAnimated:(BOOL)animated;
 
 @end

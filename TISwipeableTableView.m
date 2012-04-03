@@ -42,19 +42,25 @@
 	[self hideVisibleBackView:YES];
 }
 
-- (void)revealBackViewAtIndexPath:(NSIndexPath *)indexPath {
-	[self hideVisibleBackView:YES];
-	[(TISwipeableTableViewCell *)[self.tableView cellForRowAtIndexPath:indexPath] revealBackView];
-	[self setIndexOfVisibleBackView:indexPath];
+- (void)revealBackViewAtIndexPath:(NSIndexPath *)indexPath animated:(BOOL)animated {
+	
+	UITableViewCell * cell = [self.tableView cellForRowAtIndexPath:indexPath];
+	
+	[self hideVisibleBackView:animated];
+	
+	if ([cell respondsToSelector:@selector(revealBackViewAnimated:)]){
+		[(TISwipeableTableViewCell *)cell revealBackViewAnimated:animated];
+		[self setIndexOfVisibleBackView:indexPath];
+	}
 }
 
 - (void)hideVisibleBackView:(BOOL)animated {
 	
-	TISwipeableTableViewCell * cell = (TISwipeableTableViewCell *)[self.tableView cellForRowAtIndexPath:indexOfVisibleBackView];
-	if (animated) [cell hideBackView];
-	else [cell resetViews];
-	
-	[self setIndexOfVisibleBackView:nil];
+	UITableViewCell * cell = [self.tableView cellForRowAtIndexPath:indexOfVisibleBackView];
+	if ([cell respondsToSelector:@selector(hideBackViewAnimated:)]){
+		[(TISwipeableTableViewCell *)cell hideBackViewAnimated:animated];
+		[self setIndexOfVisibleBackView:nil];
+	}
 }
 
 - (void)dealloc {
@@ -83,13 +89,13 @@
 
 @interface TISwipeableTableViewCell (Private)
 - (void)initialSetup;
+- (void)resetViews:(BOOL)animated;
 - (CAAnimationGroup *)bounceAnimationWithHideDuration:(CGFloat)hideDuration initialXOrigin:(CGFloat)originalX;
 @end
 
 @implementation TISwipeableTableViewCell
 @synthesize backView;
 @synthesize contentViewMoving;
-@synthesize shouldSupportSwiping;
 @synthesize shouldBounce;
 
 #pragma mark - Init / Overrides
@@ -139,14 +145,13 @@
 	[backView release];
 	
 	contentViewMoving = NO;
-	shouldSupportSwiping = YES;
 	shouldBounce = YES;
 	oldStyle = self.selectionStyle;
 }
 
 - (void)prepareForReuse {
 	
-	[self resetViews];
+	[self resetViews:NO];
 	[super prepareForReuse];
 }
 
@@ -205,19 +210,19 @@
 }
 
 // Optional implementation
-- (void)backViewWillAppear {
+- (void)backViewWillAppear:(BOOL)animated {
 	
 }
 
-- (void)backViewDidAppear {
+- (void)backViewDidAppear:(BOOL)animated {
 	
 }
 
-- (void)backViewWillDisappear {
+- (void)backViewWillDisappear:(BOOL)animated {
 	
 }
 
-- (void)backViewDidDisappear {
+- (void)backViewDidDisappear:(BOOL)animated {
 	
 }
 
@@ -235,7 +240,7 @@
 		
 		if ([delegate tableView:tableView shouldSwipeCellAtIndexPath:myIndexPath]){
 			
-			[self revealBackView];
+			[self revealBackViewAnimated:YES];
 			
 			if ([delegate respondsToSelector:@selector(tableView:didSwipeCellAtIndexPath:)]){
 				[delegate tableView:tableView didSwipeCellAtIndexPath:myIndexPath];
@@ -244,7 +249,7 @@
 	}
 }
 
-- (void)revealBackView {
+- (void)revealBackViewAnimated:(BOOL)animated {
 	
 	if (!contentViewMoving && backView.hidden){
 		
@@ -253,52 +258,70 @@
 		[backView.layer setHidden:NO];
 		[backView setNeedsDisplay];
 		
-		[self backViewWillAppear];
+		[self backViewWillAppear:animated];
+		
+		oldStyle = self.selectionStyle;
+		[self setSelectionStyle:UITableViewCellSelectionStyleNone];
 		
 		[contentView.layer setAnchorPoint:CGPointMake(0, 0.5)];
 		[contentView.layer setPosition:CGPointMake(contentView.frame.size.width, contentView.layer.position.y)];
 		
-		CABasicAnimation * animation = [CABasicAnimation animationWithKeyPath:@"position.x"];
-		[animation setRemovedOnCompletion:NO];
-		[animation setDelegate:self];
-		[animation setDuration:0.14];
-		[animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear]];
-		[contentView.layer addAnimation:animation forKey:@"reveal"];
-		
-		oldStyle = self.selectionStyle;
-		[self setSelectionStyle:UITableViewCellSelectionStyleNone];
+		if (animated){
+			
+			CABasicAnimation * animation = [CABasicAnimation animationWithKeyPath:@"position.x"];
+			[animation setRemovedOnCompletion:NO];
+			[animation setDelegate:self];
+			[animation setDuration:0.14];
+			[animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear]];
+			[contentView.layer addAnimation:animation forKey:@"reveal"];
+		}
+		else
+		{
+			[self backViewDidAppear:animated];
+			[self setSelected:NO];
+			
+			contentViewMoving = NO;
+		}
 	}
 }
 
-- (void)hideBackView {
+- (void)hideBackViewAnimated:(BOOL)animated {
 	
 	if (!backView.hidden){
 		
 		contentViewMoving = YES;
 		
-		CGFloat hideDuration = 0.09;
+		[self backViewWillDisappear:animated];
 		
-		[backView.layer setOpacity:0.0];
-		CABasicAnimation * hideAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
-		[hideAnimation setFromValue:[NSNumber numberWithFloat:1.0]];
-		[hideAnimation setToValue:[NSNumber numberWithFloat:0.0]];
-		[hideAnimation setDuration:hideDuration];
-		[hideAnimation setRemovedOnCompletion:NO];
-		[hideAnimation setDelegate:self];
-		[backView.layer addAnimation:hideAnimation forKey:@"hide"];
-		
-		CGFloat originalX = contentView.layer.position.x;
-		[contentView.layer setAnchorPoint:CGPointMake(0, 0.5)];
-		[contentView.layer setPosition:CGPointMake(0, contentView.layer.position.y)];
-		[contentView.layer addAnimation:[self bounceAnimationWithHideDuration:hideDuration initialXOrigin:originalX] 
-								 forKey:@"bounce"];
-		
-		
-		[self backViewWillDisappear];
+		if (animated){
+			
+			CGFloat hideDuration = 0.09;
+			
+			[backView.layer setOpacity:0.0];
+			CABasicAnimation * hideAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
+			[hideAnimation setFromValue:[NSNumber numberWithFloat:1.0]];
+			[hideAnimation setToValue:[NSNumber numberWithFloat:0.0]];
+			[hideAnimation setDuration:hideDuration];
+			[hideAnimation setRemovedOnCompletion:NO];
+			[hideAnimation setDelegate:self];
+			[backView.layer addAnimation:hideAnimation forKey:@"hide"];
+			
+			CGFloat originalX = contentView.layer.position.x;
+			[contentView.layer setAnchorPoint:CGPointMake(0, 0.5)];
+			[contentView.layer setPosition:CGPointMake(0, contentView.layer.position.y)];
+			[contentView.layer addAnimation:[self bounceAnimationWithHideDuration:hideDuration initialXOrigin:originalX] 
+									 forKey:@"bounce"];
+			
+			
+		}
+		else
+		{
+			[self resetViews:NO];
+		}
 	}
 }
 
-- (void)resetViews {
+- (void)resetViews:(BOOL)animated {
 	
 	[contentView.layer removeAllAnimations];
 	[backView.layer removeAllAnimations];
@@ -313,7 +336,7 @@
 	
 	[self setSelectionStyle:oldStyle];
 	
-	[self backViewDidDisappear];
+	[self backViewDidDisappear:animated];
 }
 
 - (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag {
@@ -321,7 +344,7 @@
 	if (anim == [contentView.layer animationForKey:@"reveal"]){
 		[contentView.layer removeAnimationForKey:@"reveal"];
 		
-		[self backViewDidAppear];
+		[self backViewDidAppear:YES];
 		[self setSelected:NO];
 		
 		contentViewMoving = NO;
@@ -329,7 +352,7 @@
 	
 	if (anim == [contentView.layer animationForKey:@"bounce"]){
 		[contentView.layer removeAnimationForKey:@"bounce"];
-		[self resetViews];
+		[self resetViews:YES];
 	}
 	
 	if (anim == [backView.layer animationForKey:@"hide"]){
