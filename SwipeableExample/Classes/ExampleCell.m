@@ -28,7 +28,7 @@
 	}
 }
 
-- (void)backViewWillAppear {
+- (void)backViewWillAppear:(BOOL)animated {
 	
 	UIButton * button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
 	[button addTarget:self action:@selector(buttonWasTapped:) forControlEvents:UIControlEventTouchUpInside];
@@ -37,7 +37,7 @@
 	[self.backView addSubview:button];
 }
 
-- (void)backViewDidDisappear {
+- (void)backViewDidDisappear:(BOOL)animated {
 	// Remove any subviews from the backView.
 	
 	for (UIView * subview in self.backView.subviews){
