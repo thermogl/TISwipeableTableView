@@ -39,10 +39,7 @@
 
 - (void)backViewDidDisappear:(BOOL)animated {
 	// Remove any subviews from the backView.
-	
-	for (UIView * subview in self.backView.subviews){
-		[subview removeFromSuperview];
-	}
+	[self.backView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
 }
 
 - (void)drawContentView:(CGRect)rect {
