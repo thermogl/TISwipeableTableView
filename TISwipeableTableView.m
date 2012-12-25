@@ -124,7 +124,6 @@
 	contentView = [[TISwipeableTableViewCellView alloc] initWithFrame:CGRectZero];
 	[contentView setClipsToBounds:YES];
 	[contentView setOpaque:YES];
-	[contentView setBackgroundColor:[UIColor clearColor]];
 	
 	UISwipeGestureRecognizer * swipeRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(cellWasSwiped:)];
 	[swipeRecognizer setDirection:(UISwipeGestureRecognizerDirectionLeft |
@@ -136,7 +135,6 @@
 	[backView setOpaque:YES];
 	[backView setClipsToBounds:YES];
 	[backView setHidden:YES];
-	[backView setBackgroundColor:[UIColor clearColor]];
 	
 	[self addSubview:backView];
 	[self addSubview:contentView];
