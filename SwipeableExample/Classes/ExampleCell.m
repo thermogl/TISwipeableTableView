@@ -43,9 +43,18 @@
 }
 
 - (void)drawContentView:(CGRect)rect {
+
+	UIColor * textColor = [UIColor blackColor];
+	if (self.selected || self.highlighted){
+		textColor = [UIColor whiteColor];
+	}
+	else
+	{
+		[[UIColor whiteColor] set];
+		UIRectFill(self.bounds);
+	}
 	
-	UIColor * textColour = (self.selected || self.highlighted) ? [UIColor whiteColor] : [UIColor blackColor];	
-	[textColour set];
+	[textColor set];
 	
 	UIFont * textFont = [UIFont boldSystemFontOfSize:22];
 	

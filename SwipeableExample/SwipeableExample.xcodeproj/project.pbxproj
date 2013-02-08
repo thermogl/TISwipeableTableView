@@ -14,6 +14,7 @@
 		2892E4100DC94CBA00A64D0F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */; };
 		28C286E10D94DF7D0034E888 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28C286E00D94DF7D0034E888 /* RootViewController.m */; };
 		E204DB5F12ADC1820063A748 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E204DB5E12ADC1820063A748 /* AudioToolbox.framework */; };
+		E230196616C53BE2001685F6 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E230196516C53BE2001685F6 /* Default-568h@2x.png */; };
 		E238A58B125BED4500055319 /* TISwipeableTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = E238A58A125BED4500055319 /* TISwipeableTableView.m */; };
 		E24E6A4711E532710082E0CD /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E24E6A4611E532710082E0CD /* QuartzCore.framework */; };
 		E2C99CDC11C8CC3B00FA14C3 /* ExampleCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E2C99CDB11C8CC3B00FA14C3 /* ExampleCell.m */; };
@@ -34,6 +35,7 @@
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* SwipeableExample-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "SwipeableExample-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		E204DB5E12ADC1820063A748 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		E230196516C53BE2001685F6 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		E238A589125BED4500055319 /* TISwipeableTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TISwipeableTableView.h; path = ../TISwipeableTableView.h; sourceTree = SOURCE_ROOT; };
 		E238A58A125BED4500055319 /* TISwipeableTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TISwipeableTableView.m; path = ../TISwipeableTableView.m; sourceTree = SOURCE_ROOT; };
 		E24E6A4611E532710082E0CD /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -79,6 +81,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				E230196516C53BE2001685F6 /* Default-568h@2x.png */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
@@ -196,6 +199,7 @@
 			files = (
 				E2C99D0811C8CF8F00FA14C3 /* meshpattern.png in Resources */,
 				E2C99D6911C8D25300FA14C3 /* tick.wav in Resources */,
+				E230196616C53BE2001685F6 /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
