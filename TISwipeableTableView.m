@@ -25,7 +25,7 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	[self hideVisibleBackView:YES];
+	[self tableView:tableView hideVisibleBackView:YES];
 }
 
 - (BOOL)tableView:(UITableView *)tableView shouldSwipeCellAtIndexPath:(NSIndexPath *)indexPath {
@@ -34,19 +34,19 @@
 
 - (void)tableView:(UITableView *)tableView didSwipeCellAtIndexPath:(NSIndexPath *)indexPath {
 	
-	[self hideVisibleBackView:YES];
+	[self tableView:tableView hideVisibleBackView:YES];
 	[self setIndexOfVisibleBackView:indexPath];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-	[self hideVisibleBackView:YES];
+	[self tableView:(UITableView *)scrollView hideVisibleBackView:YES];
 }
 
-- (void)revealBackViewAtIndexPath:(NSIndexPath *)indexPath animated:(BOOL)animated {
+- (void)tableView:(UITableView *)tableView revealBackViewAtIndexPath:(NSIndexPath *)indexPath animated:(BOOL)animated;
+{
+	UITableViewCell * cell = [tableView cellForRowAtIndexPath:indexPath];
 	
-	UITableViewCell * cell = [self.tableView cellForRowAtIndexPath:indexPath];
-	
-	[self hideVisibleBackView:animated];
+	[self tableView:tableView hideVisibleBackView:animated];
 	
 	if ([cell respondsToSelector:@selector(revealBackViewAnimated:)]){
 		[(TISwipeableTableViewCell *)cell revealBackViewAnimated:animated];
@@ -54,9 +54,9 @@
 	}
 }
 
-- (void)hideVisibleBackView:(BOOL)animated {
+- (void)tableView:(UITableView *)tableView hideVisibleBackView:(BOOL)animated {
 	
-	UITableViewCell * cell = [self.tableView cellForRowAtIndexPath:indexOfVisibleBackView];
+	UITableViewCell * cell = [tableView cellForRowAtIndexPath:indexOfVisibleBackView];
 	if ([cell respondsToSelector:@selector(hideBackViewAnimated:)]){
 		[(TISwipeableTableViewCell *)cell hideBackViewAnimated:animated];
 		[self setIndexOfVisibleBackView:nil];
@@ -231,7 +231,9 @@
 	
 	UITableView * tableView = (UITableView *)self.superview;
 	id delegate = tableView.nextResponder; // Hopefully this is a TISwipeableTableViewController.
-	
+	if(![delegate isKindOfClass:[TISwipeableTableViewController class]])
+        delegate = [delegate nextResponder];
+    
 	if ([delegate respondsToSelector:@selector(tableView:shouldSwipeCellAtIndexPath:)]){
 		
 		NSIndexPath * myIndexPath = [tableView indexPathForCell:self];
