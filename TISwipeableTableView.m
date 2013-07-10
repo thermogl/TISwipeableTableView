@@ -74,15 +74,29 @@
 // - TISwipeableTableViewCell
 //==========================================================
 
+@interface UIView (FindSwipeableCellSuperview)
+@property (nonatomic, readonly) TISwipeableTableViewCell * tisw_findSuperview;
+@end
+
+@implementation UIView (FindSwipeableCellSuperview)
+- (TISwipeableTableViewCell *)tisw_findSuperview {
+
+	UIView * superview = self.superview;
+	if ([superview isKindOfClass:[TISwipeableTableViewCell class]]) return (TISwipeableTableViewCell *)superview;
+	else if (superview) return superview.tisw_findSuperview;
+	else return nil;
+}
+@end
+
 @implementation TISwipeableTableViewCellView
 - (void)drawRect:(CGRect)rect {
-	[(TISwipeableTableViewCell *)self.superview drawContentView:rect];
+	[self.tisw_findSuperview drawContentView:rect];
 }
 @end
 
 @implementation TISwipeableTableViewCellBackView
 - (void)drawRect:(CGRect)rect {
-	[(TISwipeableTableViewCell *)self.superview drawBackView:rect];
+	[self.tisw_findSuperview drawBackView:rect];
 }
 
 @end
