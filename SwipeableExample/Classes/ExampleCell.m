@@ -10,14 +10,10 @@
 
 @implementation ExampleCell
 @synthesize delegate;
-@synthesize text;
+@synthesize text = _text;
 
-- (void)setText:(NSString *)aString {
-	
-	NSString * copy = [aString copy];
-	[text release];
-	text = copy;
-	
+- (void)setText:(NSString *)text {
+	_text = [text copy];
 	[self setNeedsDisplay];
 }
 
@@ -57,9 +53,8 @@
 	[textColor set];
 	
 	UIFont * textFont = [UIFont boldSystemFontOfSize:22];
-	
-	CGSize textSize = [text sizeWithFont:textFont constrainedToSize:rect.size];
-	[text drawInRect:CGRectMake((rect.size.width / 2) - (textSize.width / 2), 
+	CGSize textSize = [_text sizeWithFont:textFont constrainedToSize:rect.size];
+	[_text drawInRect:CGRectMake((rect.size.width / 2) - (textSize.width / 2),
 								(rect.size.height / 2) - (textSize.height / 2),
 								textSize.width, textSize.height)
 			withFont:textFont];
@@ -90,9 +85,5 @@
 	CGGradientRelease(bottomGradient);
 }
 
-- (void)dealloc {
-	[text release];
-    [super dealloc];
-}
 
 @end

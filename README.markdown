@@ -6,6 +6,9 @@ Allows you to swipe a UITableViewCell and reveal a back view, as seen in the "Tw
 
 See the "SwipeableExample" app for the correct usage.
 
+## ARC
+Yup
+
 ## License
 
 	This control is dual licensed:

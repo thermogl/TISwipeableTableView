@@ -32,11 +32,8 @@
 // - TISwipeableTableViewController
 //==========================================================
 
-@interface TISwipeableTableViewController : UITableViewController {
-	NSIndexPath * indexOfVisibleBackView;
-}
-
-@property (nonatomic, retain, readonly) NSIndexPath * indexOfVisibleBackView;
+@interface TISwipeableTableViewController : UITableViewController
+@property (nonatomic, strong, readonly) NSIndexPath * indexOfVisibleBackView;
 
 // Thanks to Martin Destagnol (@mdestagnol) for this method.
 - (BOOL)tableView:(UITableView *)tableView shouldSwipeCellAtIndexPath:(NSIndexPath *)indexPath;
@@ -57,17 +54,7 @@
 @interface TISwipeableTableViewCellBackView : UIView
 @end
 
-@interface TISwipeableTableViewCell : UITableViewCell <UIGestureRecognizerDelegate> {
-	
-	UIView * contentView;
-	UIView * backView;
-	
-	BOOL contentViewMoving;
-	BOOL shouldBounce;
-	
-	UITableViewCellSelectionStyle oldStyle;
-}
-
+@interface TISwipeableTableViewCell : UITableViewCell <UIGestureRecognizerDelegate>
 @property (nonatomic, readonly) UIView * backView;
 @property (nonatomic, assign) BOOL contentViewMoving;
 @property (nonatomic, assign) BOOL shouldBounce;

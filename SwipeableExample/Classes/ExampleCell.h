@@ -15,15 +15,8 @@
 - (void)cellBackButtonWasTapped:(ExampleCell *)cell;
 @end
 
-@interface ExampleCell : TISwipeableTableViewCell {
-	
-	id <ExampleCellDelegate> delegate;
-	NSString * text;
-}
-
-@property (nonatomic, assign) id <ExampleCellDelegate> delegate;
+@interface ExampleCell : TISwipeableTableViewCell
+@property (nonatomic, weak) id <ExampleCellDelegate> delegate;
 @property (nonatomic, copy) NSString * text;
-
 - (void)drawShadowsWithHeight:(CGFloat)shadowHeight opacity:(CGFloat)opacity InRect:(CGRect)rect forContext:(CGContextRef)context;
-
 @end

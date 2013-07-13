@@ -14,14 +14,14 @@
 //==========================================================
 
 @interface TISwipeableTableViewController ()
-@property (nonatomic, retain) NSIndexPath * indexOfVisibleBackView;
+@property (nonatomic, strong) NSIndexPath * indexOfVisibleBackView;
 @end
 
 @implementation TISwipeableTableViewController
-@synthesize indexOfVisibleBackView;
+@synthesize indexOfVisibleBackView = _indexOfVisibleBackView;
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	return ([indexPath compare:indexOfVisibleBackView] == NSOrderedSame) ? nil : indexPath;
+	return ([indexPath compare:_indexOfVisibleBackView] == NSOrderedSame) ? nil : indexPath;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -56,17 +56,13 @@
 
 - (void)tableView:(UITableView *)tableView hideVisibleBackView:(BOOL)animated {
 	
-	UITableViewCell * cell = [tableView cellForRowAtIndexPath:indexOfVisibleBackView];
+	UITableViewCell * cell = [tableView cellForRowAtIndexPath:_indexOfVisibleBackView];
 	if ([cell respondsToSelector:@selector(hideBackViewAnimated:)]){
 		[(TISwipeableTableViewCell *)cell hideBackViewAnimated:animated];
 		[self setIndexOfVisibleBackView:nil];
 	}
 }
 
-- (void)dealloc {
-	[indexOfVisibleBackView release];
-	[super dealloc];
-}
 
 @end
 
@@ -107,10 +103,14 @@
 - (CAAnimationGroup *)bounceAnimationWithHideDuration:(CGFloat)hideDuration initialXOrigin:(CGFloat)originalX;
 @end
 
-@implementation TISwipeableTableViewCell
-@synthesize backView;
-@synthesize contentViewMoving;
-@synthesize shouldBounce;
+@implementation TISwipeableTableViewCell {
+	UIView * _contentView;
+	UITableViewCellSelectionStyle _oldStyle;
+}
+@synthesize contentView = _contentView;
+@synthesize backView = _backView;
+@synthesize contentViewMoving = _contentViewMoving;
+@synthesize shouldBounce = _shouldBounce;
 
 #pragma mark - Init / Overrides
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
@@ -135,30 +135,27 @@
 	
 	[self setBackgroundColor:[UIColor clearColor]];
 	
-	contentView = [[TISwipeableTableViewCellView alloc] initWithFrame:CGRectZero];
-	[contentView setClipsToBounds:YES];
-	[contentView setOpaque:YES];
+	_contentView = [[TISwipeableTableViewCellView alloc] initWithFrame:CGRectZero];
+	[_contentView setClipsToBounds:YES];
+	[_contentView setOpaque:YES];
 	
 	UISwipeGestureRecognizer * swipeRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(cellWasSwiped:)];
 	[swipeRecognizer setDirection:(UISwipeGestureRecognizerDirectionLeft |
 								   UISwipeGestureRecognizerDirectionRight)];
-	[contentView addGestureRecognizer:swipeRecognizer];
-	[swipeRecognizer release];
+	[_contentView addGestureRecognizer:swipeRecognizer];
 	
-	backView = [[TISwipeableTableViewCellBackView alloc] initWithFrame:CGRectZero];
-	[backView setOpaque:YES];
-	[backView setClipsToBounds:YES];
-	[backView setHidden:YES];
+	_backView = [[TISwipeableTableViewCellBackView alloc] initWithFrame:CGRectZero];
+	[_backView setOpaque:YES];
+	[_backView setClipsToBounds:YES];
+	[_backView setHidden:YES];
 	
-	[self addSubview:backView];
-	[self addSubview:contentView];
+	[self addSubview:_backView];
+	[self addSubview:_contentView];
 	
-	[contentView release];
-	[backView release];
 	
-	contentViewMoving = NO;
-	shouldBounce = YES;
-	oldStyle = self.selectionStyle;
+	_contentViewMoving = NO;
+	_shouldBounce = YES;
+	_oldStyle = self.selectionStyle;
 }
 
 - (void)prepareForReuse {
@@ -173,15 +170,15 @@
 	
 	CGRect newBounds = self.bounds;
 	newBounds.size.height -= 1;
-	[backView setFrame:newBounds];	
-	[contentView setFrame:newBounds];
+	[_backView setFrame:newBounds];	
+	[_contentView setFrame:newBounds];
 }
 
 - (void)setNeedsDisplay {
 	
 	[super setNeedsDisplay];
-	if (!contentView.hidden) [contentView setNeedsDisplay];
-	if (!backView.hidden) [backView setNeedsDisplay];
+	if (!_contentView.hidden) [_contentView setNeedsDisplay];
+	if (!_backView.hidden) [_backView setNeedsDisplay];
 }
 
 - (void)setAccessoryType:(UITableViewCellAccessoryType)accessoryType {
@@ -265,20 +262,20 @@
 
 - (void)revealBackViewAnimated:(BOOL)animated {
 	
-	if (!contentViewMoving && backView.hidden){
+	if (!_contentViewMoving && _backView.hidden){
 		
-		contentViewMoving = YES;
+		_contentViewMoving = YES;
 		
-		[backView.layer setHidden:NO];
-		[backView setNeedsDisplay];
+		[_backView.layer setHidden:NO];
+		[_backView setNeedsDisplay];
 		
 		[self backViewWillAppear:animated];
 		
-		oldStyle = self.selectionStyle;
+		_oldStyle = self.selectionStyle;
 		[self setSelectionStyle:UITableViewCellSelectionStyleNone];
 		
-		[contentView.layer setAnchorPoint:CGPointMake(0, 0.5)];
-		[contentView.layer setPosition:CGPointMake(contentView.frame.size.width, contentView.layer.position.y)];
+		[_contentView.layer setAnchorPoint:CGPointMake(0, 0.5)];
+		[_contentView.layer setPosition:CGPointMake(_contentView.frame.size.width, _contentView.layer.position.y)];
 		
 		if (animated){
 			
@@ -287,23 +284,23 @@
 			[animation setDelegate:self];
 			[animation setDuration:0.14];
 			[animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear]];
-			[contentView.layer addAnimation:animation forKey:@"reveal"];
+			[_contentView.layer addAnimation:animation forKey:@"reveal"];
 		}
 		else
 		{
 			[self backViewDidAppear:animated];
 			[self setSelected:NO];
 			
-			contentViewMoving = NO;
+			_contentViewMoving = NO;
 		}
 	}
 }
 
 - (void)hideBackViewAnimated:(BOOL)animated {
 	
-	if (!backView.hidden){
+	if (!_backView.hidden){
 		
-		contentViewMoving = YES;
+		_contentViewMoving = YES;
 		
 		[self backViewWillDisappear:animated];
 		
@@ -311,19 +308,19 @@
 			
 			CGFloat hideDuration = 0.09;
 			
-			[backView.layer setOpacity:0.0];
+			[_backView.layer setOpacity:0.0];
 			CABasicAnimation * hideAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
 			[hideAnimation setFromValue:[NSNumber numberWithFloat:1.0]];
 			[hideAnimation setToValue:[NSNumber numberWithFloat:0.0]];
 			[hideAnimation setDuration:hideDuration];
 			[hideAnimation setRemovedOnCompletion:NO];
 			[hideAnimation setDelegate:self];
-			[backView.layer addAnimation:hideAnimation forKey:@"hide"];
+			[_backView.layer addAnimation:hideAnimation forKey:@"hide"];
 			
-			CGFloat originalX = contentView.layer.position.x;
-			[contentView.layer setAnchorPoint:CGPointMake(0, 0.5)];
-			[contentView.layer setPosition:CGPointMake(0, contentView.layer.position.y)];
-			[contentView.layer addAnimation:[self bounceAnimationWithHideDuration:hideDuration initialXOrigin:originalX] 
+			CGFloat originalX = _contentView.layer.position.x;
+			[_contentView.layer setAnchorPoint:CGPointMake(0, 0.5)];
+			[_contentView.layer setPosition:CGPointMake(0, _contentView.layer.position.y)];
+			[_contentView.layer addAnimation:[self bounceAnimationWithHideDuration:hideDuration initialXOrigin:originalX] 
 									 forKey:@"bounce"];
 			
 			
@@ -337,40 +334,40 @@
 
 - (void)resetViews:(BOOL)animated {
 	
-	[contentView.layer removeAllAnimations];
-	[backView.layer removeAllAnimations];
+	[_contentView.layer removeAllAnimations];
+	[_backView.layer removeAllAnimations];
 	
-	contentViewMoving = NO;
+	_contentViewMoving = NO;
 	
-	[contentView.layer setAnchorPoint:CGPointMake(0, 0.5)];
-	[contentView.layer setPosition:CGPointMake(0, contentView.layer.position.y)];
+	[_contentView.layer setAnchorPoint:CGPointMake(0, 0.5)];
+	[_contentView.layer setPosition:CGPointMake(0, _contentView.layer.position.y)];
 	
-	[backView.layer setHidden:YES];
-	[backView.layer setOpacity:1.0];
+	[_backView.layer setHidden:YES];
+	[_backView.layer setOpacity:1.0];
 	
-	[self setSelectionStyle:oldStyle];
+	[self setSelectionStyle:_oldStyle];
 	
 	[self backViewDidDisappear:animated];
 }
 
 - (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag {
 	
-	if (anim == [contentView.layer animationForKey:@"reveal"]){
-		[contentView.layer removeAnimationForKey:@"reveal"];
+	if (anim == [_contentView.layer animationForKey:@"reveal"]){
+		[_contentView.layer removeAnimationForKey:@"reveal"];
 		
 		[self backViewDidAppear:YES];
 		[self setSelected:NO];
 		
-		contentViewMoving = NO;
+		_contentViewMoving = NO;
 	}
 	
-	if (anim == [contentView.layer animationForKey:@"bounce"]){
-		[contentView.layer removeAnimationForKey:@"bounce"];
+	if (anim == [_contentView.layer animationForKey:@"bounce"]){
+		[_contentView.layer removeAnimationForKey:@"bounce"];
 		[self resetViews:YES];
 	}
 	
-	if (anim == [backView.layer animationForKey:@"hide"]){
-		[backView.layer removeAnimationForKey:@"hide"];
+	if (anim == [_backView.layer animationForKey:@"hide"]){
+		[_backView.layer removeAnimationForKey:@"hide"];
 	}
 }
 
@@ -388,7 +385,7 @@
 	
 	CGFloat fullDuration = hideDuration;
 	
-	if (shouldBounce){
+	if (_shouldBounce){
 		
 		CGFloat bounceDuration = 0.04;
 		
@@ -429,7 +426,7 @@
 #pragma mark - Other
 - (NSString *)description {
 	
-	NSString * extraInfo = backView.hidden ? @"ContentView visible": @"BackView visible";
+	NSString * extraInfo = _backView.hidden ? @"ContentView visible": @"BackView visible";
 	return [NSString stringWithFormat:@"<TISwipeableTableViewCell %p; '%@'>", self, extraInfo];
 }
 @end
