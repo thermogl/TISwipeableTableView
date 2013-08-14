@@ -113,7 +113,7 @@
 @synthesize shouldBounce = _shouldBounce;
 
 #pragma mark - Init / Overrides
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
 	
     if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])){
 		[self initialSetup];
@@ -122,7 +122,7 @@
     return self;
 }
 
-- (id)initWithCoder:(NSCoder *)aDecoder {
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
 	
 	if ((self = [super initWithCoder:aDecoder])){
 		[self initialSetup];
