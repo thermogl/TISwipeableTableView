@@ -72,6 +72,7 @@
 
 @interface UIView (FindSwipeableCellSuperview)
 @property (nonatomic, readonly) TISwipeableTableViewCell * tisw_findSuperview;
+@property (nonatomic, readonly) UITableView * tisw_findTableview;
 @end
 
 @implementation UIView (FindSwipeableCellSuperview)
@@ -82,6 +83,14 @@
 	else if (superview) return superview.tisw_findSuperview;
 	else return nil;
 }
+
+- (UITableView *)tisw_findTableview {
+	UIView * tableView = self.superview;
+	if ([tableView isKindOfClass:[UITableView class]]) return (UITableView *)tableView;
+	else if (tableView) return tableView.tisw_findTableview;
+	else return nil;
+}
+
 @end
 
 @implementation TISwipeableTableViewCellView
@@ -240,7 +249,8 @@
 #pragma mark - Back View Show / Hide
 - (void)cellWasSwiped:(UISwipeGestureRecognizer *)recognizer {
 	
-	UITableView * tableView = (UITableView *)self.superview;
+	UITableView * tableView = self.tisw_findTableview;
+	
 	id delegate = tableView.nextResponder; // Hopefully this is a TISwipeableTableViewController.
 	if(![delegate isKindOfClass:[TISwipeableTableViewController class]])
         delegate = [delegate nextResponder];
